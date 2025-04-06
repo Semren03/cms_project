@@ -12,10 +12,11 @@ namespace cms_project.Controllers
 {
     public class AccountController : Controller
     {
+        //coment
         private readonly ApplicationDbContext dbContext;
 
         public AccountController(ApplicationDbContext appdbcontext)
-        {
+        {//t
             dbContext = appdbcontext;
         }
         public IActionResult Index()
