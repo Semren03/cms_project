@@ -1,38 +1,39 @@
-﻿@model cms_project.Models.LoginViewModel
+﻿@using cms_project.Models.ViewModel
+@model LoginViewModel
 
 @{
+    Layout = null;
     ViewData["Title"] = "Login";
 }
+<head>
 
-<h1>Login</h1>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.7/semantic.min.css" integrity="sha256-wT6CFc7EKRuf7uyVfi+MQNHUzojuHN2pSw0YWFt2K5E=" crossorigin="anonymous" />
 
-
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Login">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="StudentID" class="control-label"></label>
-                <input asp-for="StudentID" class="form-control" />
-                <span asp-validation-for="StudentID" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
-                <input asp-for="Password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Login" class="btn btn-primary" />
-            </div>
-        </form>
+</head>
+<div class="ui raised very padded center aligned text container segment">
+    <h1 class="ui header">Log in</h1>
+    <br>
+    <form asp-action="Login">
+    <div class="field">
+        <div class="ui left icon input">
+            <i class="mail outline icon"></i>
+            <input type="text" name="email" placeholder="Email Address" autofocus="true">
+        </div>
     </div>
-</div>
+    <br>
+    <div class="field">
+        <div class="ui left icon input">
+            <i class="lock icon"></i>
+            <input type="password" name="password" placeholder="Password">
+        </div>
+    </div>
+    <br>
 
-<div>
-   Don't have an account? <a asp-action="Registration">Go to Registration</a>
-</div>
+  
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+    <div class="actions">
+        <button  class=" ui large teal button" type="submit">Log in</button>
+    </div>
+    </form>
+    <br>
+</div>

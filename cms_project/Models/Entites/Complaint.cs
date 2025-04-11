@@ -1,17 +1,34 @@
-﻿namespace cms_project.Models.Entites
+﻿using cms_project.Models.Entites;
+using System.ComponentModel.DataAnnotations;
+
+public enum ComplaintType
 {
-    public class Complaint
-    {
-        public int Id { get; set; }
+    Academic,
+    Administrative,
+    Infrastructure
+}
 
-        public  string? Title { get; set; }
+public class Complaint
+{
+    [Key]
+    public Guid Id { get; set; }
 
-        public string? Description { get; set; }
+    [Required(ErrorMessage = "Complaint type is required")]
+    public ComplaintType ComplaintType { get; set; }
 
-        public DateTime? CreatedDate { get; set; }
+    [Required(ErrorMessage = "Title is required")]
+    [StringLength(100, ErrorMessage = "Title must not exceed 100 characters")]
+    public string Title { get; set; }
 
-        public string? StudentName { get; set; }
-        public List<AttachmentComplaint>? AttachmentComplaints { get; set; } 
+    [Required(ErrorMessage = "Description is required")]
+    public string Description { get; set; }
 
-    }
+   
+    public DateTime CreatedDate { get; set; } = DateTime.Now;
+
+    [Required(ErrorMessage = "Student name is required")]
+    [StringLength(100, ErrorMessage = "Student name must not exceed 100 characters")]
+    public string StudentName { get; set; }
+
+    public List<AttachmentComplaint> AttachmentComplaints { get; set; } =new List<AttachmentComplaint>();
 }

@@ -10,15 +10,28 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
+
+builder.Services.AddAuthentication("CookieAuth")
+    .AddCookie("CookieAuth",options =>
+    {
+        options.LoginPath = "/Account/Login";
+        options.LogoutPath = "/Account/Logout";
+        options.AccessDeniedPath = "/home/index";
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+    });
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("CanViewDashboard", policy =>
+    policy.RequireClaim("Permission", "CanViewDashboard"));
+});
+
+
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -32,6 +45,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Account}/{action=Login}");
 
 app.Run();

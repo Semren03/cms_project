@@ -1,15 +1,19 @@
-﻿namespace cms_project.Models.Entites
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+
+public class AttachmentComplaint
 {
-    public class AttachmentComplaint
-    {
-        public int Id { get; set; }
-        public string Path {  get; set; }   
+    [Key]
+    public Guid Id { get; set; }
 
+    [Required(ErrorMessage = "Attachment name is required")]
+    [StringLength(255)]
+    public string AttachmentName { get; set; }
 
+   
+    public Guid ComplaintId { get; set; }
 
-
-
-        public int ComplaintId { get; set; }
-        public Complaint? Complaint { get; set; }
-    }
+   
+    
+    public Complaint Complaint { get; set; }
 }

@@ -1,49 +1,78 @@
-﻿<div class="container">
-    <div class="row mx-0 justify-content-center">
-        <div class="col-md-7 col-lg-5 px-lg-2 col-xl-4 px-xl-0 px-xxl-3">
-            <form asp-controller="Complaints" asp-action="Create" method="POST"
-                            class="w-100 rounded-1 p-4 border bg-white"
-                  >
-                <label class="d-block mb-4">
-                    <span class="form-label d-block">Your name</span>
-                    <input name="StudentName"
-                           type="text"
-                           class="form-control"
-                           placeholder="Joe Bloggs" />
-                </label>
+﻿@using cms_project.Models.ViewModel
+@model ComplaintViewModel;
 
-                <label class="d-block mb-4">
-                    <span class="form-label d-block">ComplaintTitle</span>
-                    <input name="Title"
-                           type="text"
-                           class="form-control"
-                            />
-                </label>
-
-               
-                <label class="d-block mb-4">
-                    <span class="form-label d-block">What's wrong?</span>
-                    <textarea name="Description"
-                              class="form-control"
-                              rows="3"
-                              placeholder="Please describe your problem"></textarea>
-                </label>
-
-                <div class="mb-3">
-                    <button type="submit" class="btn btn-primary px-3 rounded-3">
-                        Submit
-                    </button>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow mt-4 mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Submit New Complaint</h4>
                 </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Complaint Type</label>
+                            <select class="form-select" asp-for="ComplaintType">
+                                <option value="">-- Select Complaint Type --</option>
+                                <option value="Academic">Academic</option>
+                                <option value="Administrative">Administrative</option>
+                                <option value="Infrastructure">Infrastructure</option>
+                            </select>
+                            <span asp-validation-for="ComplaintType" class="text-danger"></span>
+                        </div>
 
-                <div class="d-block text-end">
-                    <div class="small">
-                        by
-                        <a href="https://herotofu.com"
-                           class="text-dark text-decoration-none"
-                           target="_blank">HeroTofu</a>
-                    </div>
+                        <div class="row mb-3">
+                            <label class="col-sm-3 col-form-label">Title</label>
+                            <div class="col-sm-9">
+                                <input class="form-control" asp-for="Title">
+                                <span asp-validation-for="Title" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <label class="col-sm-3 col-form-label">Description</label>
+                            <div class="col-sm-9">
+                                <textarea class="form-control" asp-for="Description" rows="5"></textarea>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <label class="col-sm-3 col-form-label">Student Name</label>
+                            <div class="col-sm-9">
+                                <input class="form-control" asp-for="StudentName">
+                                <span asp-validation-for="StudentName" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <label class="col-sm-3 col-form-label">Upload Files</label>
+                            <div class="col-sm-9">
+                                <input type="file" class="form-control" asp-for="Attachments" multiple>
+                                <small class="text-muted">You can upload multiple files at once</small>
+                                <span asp-validation-for="Attachments" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6 d-grid">
+                                <a class="btn btn-outline-secondary" asp-controller="Complaints" asp-action="Index" role="button">
+                                    Cancel
+                                </a>
+                            </div>
+                            <div class="col-sm-6 d-grid">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

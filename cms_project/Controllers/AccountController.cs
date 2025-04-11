@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
 using cms_project.Data;
-using cms_project.Models;
 using cms_project.Models.Entites;
+using cms_project.Models.ViewModel;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -12,11 +12,11 @@ namespace cms_project.Controllers
 {
     public class AccountController : Controller
     {
-        //coment
+       
         private readonly ApplicationDbContext dbContext;
 
         public AccountController(ApplicationDbContext appdbcontext)
-        {//t
+        {
             dbContext = appdbcontext;
         }
         public IActionResult Index()
@@ -33,38 +33,7 @@ namespace cms_project.Controllers
             return View();
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Registration(RegistrationViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                UserAccount account = new UserAccount();
-                account.StudentID = model.StudentID;
-                account.FirstName = model.FirstName;
-                account.LastName = model.LastName;
-                account.Email = model.Email;
-                account.Password = model.Password;
-                try
-                {
-
-                    dbContext.UserAccounts.Add(account);
-                    dbContext.SaveChanges();
-
-                    ModelState.Clear();
-                    ViewBag.Message = $"{account.FirstName} {account.LastName} registered successfully. Please login.";
-                }
-                catch (DbUpdateException ex)
-                {
-
-                    ModelState.AddModelError("", "Please Enter UNIQUE Email or Password");
-                    return View(model);
-                }
-                return View();
-            }
-
-            
-            return View();
-        }
+      
         public IActionResult Login()
         {
             return View();
@@ -74,19 +43,23 @@ namespace cms_project.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = dbContext.UserAccounts.Where(x => x.StudentID == model.StudentID  && x.Password == model.Password).FirstOrDefault();
+                var user = dbContext.UserAccounts.Include(x=>x.Role)
+                                                 .ThenInclude(x=>x.Claims)
+                                                 .Where(x => x.Email == model.Email  && x.Password == model.Password)
+                                                 .AsNoTracking()
+                                                 .FirstOrDefault();
                 if (user != null)
                 {
-                    //Success , create cookie done
                     var claims = new List<Claim>
                     {
-                        new Claim (ClaimTypes.Name,user.FirstName),
-                        new Claim ("Name",user.FirstName),
-                        new Claim (ClaimTypes.Role,"User"),
-
+                        new Claim ("Name",user.Name),
                     };
-                    var claimsIdentity = new ClaimsIdentity (claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                    HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+                    foreach(var claim in user.Role.Claims)
+                    {
+                        claims.Add(new Claim ("Permission", claim.Name));
+                    }
+                    var claimsIdentity = new ClaimsIdentity (claims, "CookieAuth");
+                    HttpContext.SignInAsync("CookieAuth", new ClaimsPrincipal(claimsIdentity));
 
                     return RedirectToAction("SecurePage");
                 }
@@ -100,12 +73,12 @@ namespace cms_project.Controllers
         public IActionResult Logout()
         {
             HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Index");
+            return RedirectToAction("Index","Complaints");
         }
-        [Authorize]
+        [Authorize(Policy ="CanViewDashboard")]
         public IActionResult SecurePage()
         {
-            ViewBag.Name = HttpContext.User.Identity.Name; 
+            ViewBag.Name = HttpContext.User.Claims.FirstOrDefault(x=>x.Type =="Name").Value; 
             return View();
         }
     }

@@ -22,93 +22,140 @@ namespace cms_project.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("cms_project.Models.Entites.AttachmentComplaint", b =>
+            modelBuilder.Entity("AttachmentComplaint", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ComplaintId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Path")
+                    b.Property<string>("AttachmentName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<Guid>("ComplaintId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ComplaintId");
 
-                    b.ToTable("AttachmentComplaint");
+                    b.ToTable("AttachmentComplaints");
                 });
 
-            modelBuilder.Entity("cms_project.Models.Entites.Complaint", b =>
+            modelBuilder.Entity("ClaimsRole", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("ClaimsId")
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<int>("RolesId")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime?>("CreatedDate")
+                    b.HasKey("ClaimsId", "RolesId");
+
+                    b.HasIndex("RolesId");
+
+                    b.ToTable("ClaimsRole");
+                });
+
+            modelBuilder.Entity("Complaint", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("ComplaintType")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("StudentName")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Complaints");
                 });
 
+            modelBuilder.Entity("cms_project.Models.Entites.Claims", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Claims");
+                });
+
+            modelBuilder.Entity("cms_project.Models.Entites.Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Roles");
+                });
+
             modelBuilder.Entity("cms_project.Models.Entites.UserAccount", b =>
                 {
-                    b.Property<string>("StudentID")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("FirstName")
+                    b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("StudentID");
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
 
-                    b.HasIndex("Email")
-                        .IsUnique();
+                    b.HasKey("Id");
 
-                    b.HasIndex("StudentID")
-                        .IsUnique();
+                    b.HasIndex("RoleId");
 
                     b.ToTable("UserAccounts");
                 });
 
-            modelBuilder.Entity("cms_project.Models.Entites.AttachmentComplaint", b =>
+            modelBuilder.Entity("AttachmentComplaint", b =>
                 {
-                    b.HasOne("cms_project.Models.Entites.Complaint", "Complaint")
+                    b.HasOne("Complaint", "Complaint")
                         .WithMany("AttachmentComplaints")
                         .HasForeignKey("ComplaintId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -117,9 +164,40 @@ namespace cms_project.Migrations
                     b.Navigation("Complaint");
                 });
 
-            modelBuilder.Entity("cms_project.Models.Entites.Complaint", b =>
+            modelBuilder.Entity("ClaimsRole", b =>
+                {
+                    b.HasOne("cms_project.Models.Entites.Claims", null)
+                        .WithMany()
+                        .HasForeignKey("ClaimsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("cms_project.Models.Entites.Role", null)
+                        .WithMany()
+                        .HasForeignKey("RolesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("cms_project.Models.Entites.UserAccount", b =>
+                {
+                    b.HasOne("cms_project.Models.Entites.Role", "Role")
+                        .WithMany("UserAccounts")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("Complaint", b =>
                 {
                     b.Navigation("AttachmentComplaints");
+                });
+
+            modelBuilder.Entity("cms_project.Models.Entites.Role", b =>
+                {
+                    b.Navigation("UserAccounts");
                 });
 #pragma warning restore 612, 618
         }
