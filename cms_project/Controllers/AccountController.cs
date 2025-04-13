@@ -52,7 +52,9 @@ namespace cms_project.Controllers
                 {
                     var claims = new List<Claim>
                     {
+                        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                         new Claim ("Name",user.Name),
+                        new Claim("Role", user.Role.Name)
                     };
                     foreach(var claim in user.Role.Claims)
                     {
@@ -67,6 +69,7 @@ namespace cms_project.Controllers
                 {
                     ModelState.AddModelError("", "StudentID or Password is not Correct");
                 }
+                       
             }
                 return View();
         }

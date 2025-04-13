@@ -40,7 +40,7 @@ namespace cms_project.Migrations
 
                     b.HasIndex("ComplaintId");
 
-                    b.ToTable("AttachmentComplaints");
+                    b.ToTable("AttachmentComplaints", (string)null);
                 });
 
             modelBuilder.Entity("ClaimsRole", b =>
@@ -55,7 +55,7 @@ namespace cms_project.Migrations
 
                     b.HasIndex("RolesId");
 
-                    b.ToTable("ClaimsRole");
+                    b.ToTable("ClaimsRole", (string)null);
                 });
 
             modelBuilder.Entity("Complaint", b =>
@@ -65,6 +65,9 @@ namespace cms_project.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("ComplaintType")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CreatedBy")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedDate")
@@ -86,7 +89,7 @@ namespace cms_project.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Complaints");
+                    b.ToTable("Complaints", (string)null);
                 });
 
             modelBuilder.Entity("cms_project.Models.Entites.Claims", b =>
@@ -103,7 +106,7 @@ namespace cms_project.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Claims");
+                    b.ToTable("Claims", (string)null);
                 });
 
             modelBuilder.Entity("cms_project.Models.Entites.Role", b =>
@@ -120,7 +123,7 @@ namespace cms_project.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
                 });
 
             modelBuilder.Entity("cms_project.Models.Entites.UserAccount", b =>
@@ -150,7 +153,7 @@ namespace cms_project.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("UserAccounts");
+                    b.ToTable("UserAccounts", (string)null);
                 });
 
             modelBuilder.Entity("AttachmentComplaint", b =>

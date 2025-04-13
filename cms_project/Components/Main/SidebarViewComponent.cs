@@ -4,6 +4,11 @@ public class SidebarViewComponent : ViewComponent
 {
     public IViewComponentResult Invoke()
     {
+        var roleClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == "Role");
+        var role = roleClaim?.Value ?? "";
+
+        ViewBag.UserRole = role;
+
         return View();
     }
 }

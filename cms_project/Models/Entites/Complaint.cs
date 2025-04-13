@@ -26,9 +26,13 @@ public class Complaint
    
     public DateTime CreatedDate { get; set; } = DateTime.Now;
 
+    
+
     [Required(ErrorMessage = "Student name is required")]
     [StringLength(100, ErrorMessage = "Student name must not exceed 100 characters")]
     public string StudentName { get; set; }
+
+    public int CreatedBy { get; set; }
 
     public List<AttachmentComplaint> AttachmentComplaints { get; set; } =new List<AttachmentComplaint>();
 }

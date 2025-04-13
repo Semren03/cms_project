@@ -1,4 +1,5 @@
-﻿using cms_project.Data;
+﻿using System.Security.Claims;
+using cms_project.Data;
 using cms_project.Models.Entites;
 using cms_project.Models.ViewModel;
 using Microsoft.AspNetCore.Mvc;
@@ -28,13 +29,22 @@ namespace cms_project.Controllers
             {
                 return View(cvm);
             }
-            Complaint complaint = new Complaint()
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!int.TryParse(userIdClaim, out int userId))
             {
-                ComplaintType = cvm.ComplaintType,
-                Title = cvm.Title,
-                Description = cvm.Description,
-                StudentName = cvm.StudentName,
+                return BadRequest("Cannot Send The Request");
+            }
+
+            Complaint complaint = new Complaint()
+                {
+                    ComplaintType = cvm.ComplaintType,
+                    Title = cvm.Title,
+                    Description = cvm.Description,
+                    StudentName = cvm.StudentName,
+                    CreatedBy = userId  ,
+                    
             };
+            
             if (cvm.Attachments.Count > 0)
             {
                 foreach (var file in cvm.Attachments)
@@ -55,7 +65,7 @@ namespace cms_project.Controllers
                         {
                             await file.CopyToAsync(stream);
                         }
-                    }
+                        }
                 }
             }
             
