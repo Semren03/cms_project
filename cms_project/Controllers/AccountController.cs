@@ -28,10 +28,7 @@ namespace cms_project.Controllers
         {
             return View();
         }
-        public IActionResult Registration()
-        {
-            return View();
-        }
+
 
       
         public IActionResult Login()
@@ -54,7 +51,8 @@ namespace cms_project.Controllers
                     {
                         new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                         new Claim ("Name",user.Name),
-                        new Claim("Role", user.Role.Name)
+                        new Claim("Role", user.Role.Name),
+                        new Claim(ClaimTypes.Email,user.Email),
                     };
                     foreach(var claim in user.Role.Claims)
                     {
@@ -73,16 +71,19 @@ namespace cms_project.Controllers
             }
                 return View();
         }
-        public IActionResult Logout()
-        {
-            HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Index","Complaints");
-        }
+        [HttpPost]
+            public IActionResult Logout()
+            {
+                HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                return RedirectToAction("Login");
+            }
         [Authorize(Policy ="CanViewDashboard")]
         public IActionResult SecurePage()
         {
             ViewBag.Name = HttpContext.User.Claims.FirstOrDefault(x=>x.Type =="Name").Value; 
             return View();
         }
+
+ 
     }
 }

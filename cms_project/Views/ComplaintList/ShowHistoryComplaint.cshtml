@@ -1,0 +1,56 @@
+﻿@model List<cms_project.Models.ViewModel.ComplaintListViewModel>
+
+
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Complaints History</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Complaint Type</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Created Date</th>
+                        <th>Attachment</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var complaint in Model)
+                    {
+                        <tr>
+                            <td>@complaint.ComplaintType</td>
+                            <td>@complaint.Title</td>
+                            <td>@complaint.Description</td>
+                            <td>@complaint.CreatedDate.ToString("yyyy-MM-dd")</td>
+                            <td>
+                                @foreach (var attahment in complaint.Attachment)
+                                {
+                                    <a href="\attachment\@attahment" target="_blank">@attahment</a>
+                                    <br />
+                                }
+                            </td>
+                          
+                        </tr>
+                    }
+
+
+                </tbody>
+                @* <tfoot> *@
+                @*     <tr> *@
+                @*         <th>Name</th> *@
+                @*         <th>Position</th> *@
+                @*         <th>Office</th> *@
+                @*         <th>Age</th> *@
+                @*         <th>Start date</th> *@
+                @*         <th>Salary</th> *@
+                @*     </tr> *@
+                @* </tfoot> *@
+            </table>
+        </div>
+    </div>
+</div>

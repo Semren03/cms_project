@@ -1,5 +1,7 @@
 ﻿using cms_project.Models.Entites;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Reflection.Metadata;
 
 public enum ComplaintType
 {
@@ -30,9 +32,12 @@ public class Complaint
 
     [Required(ErrorMessage = "Student name is required")]
     [StringLength(100, ErrorMessage = "Student name must not exceed 100 characters")]
-    public string StudentName { get; set; }
 
+    [ForeignKey(nameof(UserAccount))]
     public int CreatedBy { get; set; }
+
+     
+    public UserAccount UserAccount { get; set; }
 
     public List<AttachmentComplaint> AttachmentComplaints { get; set; } =new List<AttachmentComplaint>();
 }

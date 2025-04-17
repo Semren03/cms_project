@@ -40,7 +40,7 @@ namespace cms_project.Migrations
 
                     b.HasIndex("ComplaintId");
 
-                    b.ToTable("AttachmentComplaints", (string)null);
+                    b.ToTable("AttachmentComplaints");
                 });
 
             modelBuilder.Entity("ClaimsRole", b =>
@@ -55,7 +55,7 @@ namespace cms_project.Migrations
 
                     b.HasIndex("RolesId");
 
-                    b.ToTable("ClaimsRole", (string)null);
+                    b.ToTable("ClaimsRole");
                 });
 
             modelBuilder.Entity("Complaint", b =>
@@ -68,6 +68,7 @@ namespace cms_project.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("CreatedBy")
+                        .HasMaxLength(100)
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedDate")
@@ -77,11 +78,6 @@ namespace cms_project.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("StudentName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -89,7 +85,9 @@ namespace cms_project.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Complaints", (string)null);
+                    b.HasIndex("CreatedBy");
+
+                    b.ToTable("Complaints");
                 });
 
             modelBuilder.Entity("cms_project.Models.Entites.Claims", b =>
@@ -106,7 +104,7 @@ namespace cms_project.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Claims", (string)null);
+                    b.ToTable("Claims");
                 });
 
             modelBuilder.Entity("cms_project.Models.Entites.Role", b =>
@@ -123,7 +121,7 @@ namespace cms_project.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles", (string)null);
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("cms_project.Models.Entites.UserAccount", b =>
@@ -153,7 +151,7 @@ namespace cms_project.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("UserAccounts", (string)null);
+                    b.ToTable("UserAccounts");
                 });
 
             modelBuilder.Entity("AttachmentComplaint", b =>
@@ -182,6 +180,17 @@ namespace cms_project.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Complaint", b =>
+                {
+                    b.HasOne("cms_project.Models.Entites.UserAccount", "UserAccount")
+                        .WithMany("Complaints")
+                        .HasForeignKey("CreatedBy")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserAccount");
+                });
+
             modelBuilder.Entity("cms_project.Models.Entites.UserAccount", b =>
                 {
                     b.HasOne("cms_project.Models.Entites.Role", "Role")
@@ -201,6 +210,11 @@ namespace cms_project.Migrations
             modelBuilder.Entity("cms_project.Models.Entites.Role", b =>
                 {
                     b.Navigation("UserAccounts");
+                });
+
+            modelBuilder.Entity("cms_project.Models.Entites.UserAccount", b =>
+                {
+                    b.Navigation("Complaints");
                 });
 #pragma warning restore 612, 618
         }

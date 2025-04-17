@@ -15,11 +15,7 @@ namespace cms_project.Models.ViewModel
 
         [Required(ErrorMessage = "Description is required")]
         public string Description { get; set; }
-
-        [Required(ErrorMessage = "Student name is required")]
-        public string StudentName { get; set; }
-
-        
+  
         public List<IFormFile> Attachments { get; set; }
 
 

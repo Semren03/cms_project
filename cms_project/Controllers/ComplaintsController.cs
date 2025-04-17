@@ -2,6 +2,7 @@
 using cms_project.Data;
 using cms_project.Models.Entites;
 using cms_project.Models.ViewModel;
+using cms_project.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace cms_project.Controllers
@@ -35,12 +36,14 @@ namespace cms_project.Controllers
                 return BadRequest("Cannot Send The Request");
             }
 
+            var userEmail = User.FindFirstValue(ClaimTypes.Email);
+
+
             Complaint complaint = new Complaint()
                 {
                     ComplaintType = cvm.ComplaintType,
                     Title = cvm.Title,
                     Description = cvm.Description,
-                    StudentName = cvm.StudentName,
                     CreatedBy = userId  ,
                     
             };
@@ -75,6 +78,8 @@ namespace cms_project.Controllers
 
             dbContext.Complaints.Add(complaint);
             await dbContext.SaveChangesAsync();
+          var x =  new EmailService();
+            x.Send(userEmail,"Complaint Submited",$"Dear {User.FindFirstValue("Name")}, Thank you for Submited The Complaint" );
             return RedirectToAction("Create","Complaints");
         }
 

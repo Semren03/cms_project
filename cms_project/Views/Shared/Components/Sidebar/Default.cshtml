@@ -1,9 +1,6 @@
 ﻿@model cms_project.Models.ViewModel.SideBarViewModel
 
 
-@{
-    var role = ViewBag.UserRole as string;
-}
 <!-- Sidebar -->
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
@@ -35,7 +32,7 @@
     </div>
 
     <!-- Nav Item - Pages Collapse Menu -->
-    @if (role == "Student")
+    @if (Model.Role == "Student")
     {
         <li class="nav-item">
             <a class="nav-link collapsed"  asp-controller="Complaints" asp-action="Create"
@@ -50,7 +47,7 @@
         <!-- Nav Item - Utilities Collapse Menu -->
 
         <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
+            <a class="nav-link collapsed" asp-controller="ComplaintList" asp-action="ShowHistoryComplaint"
             aria-expanded="true" aria-controls="collapseUtilities">
                 <i class="fas fa-fw fa-wrench"></i>
                 <span>Complaint History</span>
@@ -76,10 +73,10 @@
     </div>
 
     <!-- Nav Item - Pages Collapse Menu -->
-    @if (role == "SuperAdmin")
+    @if (Model.Role == "SuperAdmin")
     {
         <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
+            <a class="nav-link collapsed" asp-controller="ComplaintList" asp-action="ShowComplaint"
             aria-expanded="true" aria-controls="collapsePages">
                 <i class="fas fa-fw fa-folder"></i>
                 <span>Complaint List</span>

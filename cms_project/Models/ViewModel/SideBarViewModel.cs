@@ -4,6 +4,8 @@ namespace cms_project.Models.ViewModel
 {
     public class SideBarViewModel
     {
-        public Role Role { get; set; }
+        public List<AttachmentComplaint> AttachmentComplaints { get; set; }
+        public List<Complaint> Complaints { get; set; }
+        public string Role { get; set; }
     }
 }

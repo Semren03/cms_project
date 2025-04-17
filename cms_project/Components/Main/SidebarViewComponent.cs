@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using cms_project.Models.ViewModel;
+using Microsoft.AspNetCore.Mvc;
 
 public class SidebarViewComponent : ViewComponent
 {
@@ -6,9 +7,6 @@ public class SidebarViewComponent : ViewComponent
     {
         var roleClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == "Role");
         var role = roleClaim?.Value ?? "";
-
-        ViewBag.UserRole = role;
-
-        return View();
+        return View(new SideBarViewModel { Role = role });
     }
 }
