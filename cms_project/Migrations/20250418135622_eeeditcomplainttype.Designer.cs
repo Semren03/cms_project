@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using cms_project.Data;
 
@@ -11,9 +12,11 @@ using cms_project.Data;
 namespace cms_project.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250418135622_eeeditcomplainttype")]
+    partial class eeeditcomplainttype
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -64,9 +67,6 @@ namespace cms_project.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int?>("AssignedTo")
-                        .HasColumnType("int");
-
                     b.Property<int>("ComplaintTypeId")
                         .HasColumnType("int");
 
@@ -81,9 +81,6 @@ namespace cms_project.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("StatusId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -91,15 +88,11 @@ namespace cms_project.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AssignedTo");
-
                     b.HasIndex("ComplaintTypeId");
 
                     b.HasIndex("CreatedBy");
 
-                    b.HasIndex("StatusId");
-
-                    b.ToTable("Complaint");
+                    b.ToTable("Complaints");
                 });
 
             modelBuilder.Entity("cms_project.Models.Entites.Claims", b =>
@@ -154,23 +147,6 @@ namespace cms_project.Migrations
                     b.ToTable("Roles");
                 });
 
-            modelBuilder.Entity("cms_project.Models.Entites.Status", b =>
-                {
-                    b.Property<int>("StatusId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StatusId"));
-
-                    b.Property<string>("StatusName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("StatusId");
-
-                    b.ToTable("Status");
-                });
-
             modelBuilder.Entity("cms_project.Models.Entites.UserAccount", b =>
                 {
                     b.Property<int>("Id")
@@ -198,7 +174,7 @@ namespace cms_project.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("UserAccount");
+                    b.ToTable("UserAccounts");
                 });
 
             modelBuilder.Entity("AttachmentComplaint", b =>
@@ -229,11 +205,6 @@ namespace cms_project.Migrations
 
             modelBuilder.Entity("Complaint", b =>
                 {
-                    b.HasOne("cms_project.Models.Entites.UserAccount", "AssignedUser")
-                        .WithMany("AssignedUsers")
-                        .HasForeignKey("AssignedTo")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("cms_project.Models.Entites.ComplaintType", "ComplaintType")
                         .WithMany("Complaints")
                         .HasForeignKey("ComplaintTypeId")
@@ -243,19 +214,10 @@ namespace cms_project.Migrations
                     b.HasOne("cms_project.Models.Entites.UserAccount", "UserAccount")
                         .WithMany("Complaints")
                         .HasForeignKey("CreatedBy")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("cms_project.Models.Entites.Status", "Status")
-                        .WithMany("Complaints")
-                        .HasForeignKey("StatusId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("AssignedUser");
-
                     b.Navigation("ComplaintType");
-
-                    b.Navigation("Status");
 
                     b.Navigation("UserAccount");
                 });
@@ -286,15 +248,8 @@ namespace cms_project.Migrations
                     b.Navigation("UserAccounts");
                 });
 
-            modelBuilder.Entity("cms_project.Models.Entites.Status", b =>
-                {
-                    b.Navigation("Complaints");
-                });
-
             modelBuilder.Entity("cms_project.Models.Entites.UserAccount", b =>
                 {
-                    b.Navigation("AssignedUsers");
-
                     b.Navigation("Complaints");
                 });
 #pragma warning restore 612, 618

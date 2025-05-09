@@ -3,19 +3,17 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection.Metadata;
 
-public enum ComplaintType
-{
-    Academic,
-    Administrative,
-    Infrastructure
-}
+
 
 public class Complaint
 {
     [Key]
     public Guid Id { get; set; }
 
-    [Required(ErrorMessage = "Complaint type is required")]
+    [Required]
+    public int ComplaintTypeId { get; set; }
+
+    [ForeignKey(nameof(ComplaintTypeId))]
     public ComplaintType ComplaintType { get; set; }
 
     [Required(ErrorMessage = "Title is required")]
@@ -33,11 +31,20 @@ public class Complaint
     [Required(ErrorMessage = "Student name is required")]
     [StringLength(100, ErrorMessage = "Student name must not exceed 100 characters")]
 
-    [ForeignKey(nameof(UserAccount))]
+    
     public int CreatedBy { get; set; }
-
-     
     public UserAccount UserAccount { get; set; }
+
+
+
+    
+    public int? AssignedTo { get; set; }
+    public UserAccount AssignedUser { get; set; }
+
+    public int? StatusId { get; set; }
+
+    [ForeignKey(nameof(StatusId))]
+    public Status Status { get; set; }
 
     public List<AttachmentComplaint> AttachmentComplaints { get; set; } =new List<AttachmentComplaint>();
 }

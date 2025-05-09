@@ -1,0 +1,41 @@
+﻿@model List<cms_project.Models.Entites.UserAccount>
+
+<div class="container">
+    <h2>Manage Users</h2>
+
+    <a href="@Url.Action("adduser", "MangementAdmin")" class="btn btn-success mb-3">Add User</a>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Manage Users</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>User Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model)
+                        {
+                            <tr>
+                                <td>@user.Name</td>
+                                <td>@user.Email</td>
+                                <td>@user.Role.Name</td>
+                                <td>
+                                    <a href="@Url.Action("Edit", "MangementAdmin", new { id = user.Id })" class="btn btn-warning">Edit</a>
+                                    <a href="@Url.Action("Delete", "MangementAdmin", new { id = user.Id })" class="btn btn-danger">Delete</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,68 @@
+﻿@using cms_project.Models.ViewModel
+@model AddUserRoleViewModel
+
+<div class="container mt-5">
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <h4 class="card-title mb-4">Assign Role to User</h4>
+
+            <!-- Search Form -->
+            <form class="form-inline mb-3" id="userSearchForm">
+                <div class="form-group mr-2">
+                    <label for="Email" class="sr-only">User Email</label>
+                    <input type="email" class="form-control" id="Email" placeholder="Enter user email" required />
+                </div>
+                <button type="submit" class="btn btn-primary">Check User</button>
+            </form>
+
+            <!-- User Info -->
+            <div id="userInfo" class="mb-3"></div>
+
+            <!-- Role Assignment Form -->
+            <form asp-action="AddUser" method="post" class="form-inline" id="addRoleForm" style="display:none;">
+                <div class="form-group mr-2">
+                    <label for="RoleId" class="mr-2">Select Role:</label>
+                    <select class="form-control" asp-for="@Model.RoleId" id="RoleId">
+                        @foreach (var role in Model.Roles)
+                        {
+                            <option value="@role.Id">@role.Name</option>
+                        }
+                    </select>
+                </div>
+                <input type="hidden" id="userid" name="UserId" />
+                <button type="submit" class="btn btn-success">Assign Role</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $('#userSearchForm').submit(function (e) {
+            e.preventDefault();
+            const userEmail = $('#Email').val();
+
+            $.ajax({
+                url: '/MangementAdmin/GetUserData',
+                type: 'GET',
+                data: { Email: userEmail },
+                success: function (data) {
+                    if (data && data.success) {
+                        $('#userInfo').html(`<div class="alert alert-success">✅ User Found: <strong>${data.user.name}</strong></div>`);
+                        $('#userid').val(data.user.id);
+                        $('#addRoleForm').fadeIn();
+                        $('#RoleId').val(data.user.roleId);
+                    } else {
+                        $('#userInfo').html(`<div class="alert alert-danger">❌ User not found.</div>`);
+                        $('#addRoleForm').hide();
+                    }
+                },
+                error: function () {
+                    $('#userInfo').html(`<div class="alert alert-danger">⚠️ An error occurred while checking the user.</div>`);
+                    $('#addRoleForm').hide();
+                }
+            });
+        });
+    </script>
+}

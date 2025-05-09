@@ -9,11 +9,41 @@ namespace cms_project.Data
             {  
 
             }
-       public DbSet<UserAccount> UserAccounts { get; set; }
-        public DbSet<Complaint> Complaints { get; set; }
         public DbSet<AttachmentComplaint> AttachmentComplaints { get; set; }
 
         public DbSet<Role> Roles { get; set; } 
+
         public DbSet<Claims> Claims { get; set; }
+
+
+        public DbSet<ComplaintType> ComplaintTypes { get; set; }
+
+
+
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Complaint>()
+                .HasOne(c => c.AssignedUser)
+                .WithMany(u => u.AssignedUsers)
+                .HasForeignKey(c => c.AssignedTo)
+                .OnDelete(DeleteBehavior.Restrict); 
+
+            modelBuilder.Entity<Complaint>()
+                .HasOne(c => c.UserAccount)
+                .WithMany(u => u.Complaints)
+                .HasForeignKey(c => c.CreatedBy)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Complaint>()
+               .HasOne(c => c.Status)
+               .WithMany(u => u.Complaints)
+               .HasForeignKey(c => c.StatusId)
+               .OnDelete(DeleteBehavior.Restrict);
+        }
+
+
     }
 }

@@ -4,6 +4,7 @@ using cms_project.Models.Entites;
 using cms_project.Models.ViewModel;
 using cms_project.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace cms_project.Controllers
 {
@@ -20,15 +21,27 @@ namespace cms_project.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            return View();
+
+            var complaintTypes= dbContext.ComplaintTypes.Select(x=>new ComplaintTypesViewModel
+            {
+               Id  = x.Id,
+               Name =x.Name,
+            }).ToList();
+            return View(new ComplaintViewModel() { ComplaintTypeList=complaintTypes});
         }
         [HttpPost]
         public async Task<IActionResult> Create(ComplaintViewModel cvm)
         {
-           
+
+
             if (!ModelState.IsValid) 
             {
-                return View(cvm);
+                var complaintTypes = dbContext.ComplaintTypes.Select(x => new ComplaintTypesViewModel
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                }).ToList();
+                return View(cvm.ComplaintTypeList=complaintTypes);
             }
             var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (!int.TryParse(userIdClaim, out int userId))
@@ -41,7 +54,7 @@ namespace cms_project.Controllers
 
             Complaint complaint = new Complaint()
                 {
-                    ComplaintType = cvm.ComplaintType,
+                ComplaintTypeId = cvm.ComplaintTypeId,
                     Title = cvm.Title,
                     Description = cvm.Description,
                     CreatedBy = userId  ,
@@ -76,7 +89,7 @@ namespace cms_project.Controllers
 
            
 
-            dbContext.Complaints.Add(complaint);
+            dbContext.Set<Complaint>().Add(complaint);
             await dbContext.SaveChangesAsync();
           var x =  new EmailService();
             x.Send(userEmail,"Complaint Submited",$"Dear {User.FindFirstValue("Name")}, Thank you for Submited The Complaint" );

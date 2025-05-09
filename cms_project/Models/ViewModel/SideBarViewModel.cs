@@ -7,5 +7,6 @@ namespace cms_project.Models.ViewModel
         public List<AttachmentComplaint> AttachmentComplaints { get; set; }
         public List<Complaint> Complaints { get; set; }
         public string Role { get; set; }
+        public List<string> Permission { get; set; }    = new List<string>();
     }
 }

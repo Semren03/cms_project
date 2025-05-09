@@ -1,0 +1,76 @@
+﻿@model cms_project.Models.Entites.UserAccount
+
+<div class="container">
+    <h2>Search User by ID</h2>
+
+    <input type="text" id="userId" class="form-control" placeholder="Enter User ID" />
+    <button id="searchBtn" class="btn btn-primary mt-2">Search</button>
+
+    <div id="userDetailsSection" style="display: none;">
+        <h3>User Details</h3>
+        <p id="userDetails"></p>
+        <!-- إضافة الزر لتعيين دور للمستخدم هنا -->
+        <select id="roleSelect" class="form-control">
+            <option value="">Select Role</option>
+            @foreach (var role in ViewBag.Roles)
+            {
+                <option value="@role.Id">@role.Name</option>
+            }
+        </select>
+        <button id="assignRoleBtn" class="btn btn-success mt-2">Assign Role</button>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById("searchBtn").addEventListener("click", function() {
+            var userId = document.getElementById("userId").value;
+            if (userId) {
+                fetch(`/MangementUser/GetUserData/${userId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            document.getElementById("userDetails").innerHTML = `
+                                <strong>Name:</strong> ${data.user.Name} <br>
+                                <strong>Email:</strong> ${data.user.Email}
+                            `;
+                            document.getElementById("userDetailsSection").style.display = "block";
+                        } else {
+                            alert(data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert("Error fetching user data!");
+                    });
+            } else {
+                alert("Please enter a valid User ID.");
+            }
+        });
+
+        document.getElementById("assignRoleBtn").addEventListener("click", function() {
+            var userId = document.getElementById("userId").value;
+            var roleId = document.getElementById("roleSelect").value;
+
+            if (userId && roleId) {
+                fetch(`/MangementAdmin/AssignRole/${userId}/${roleId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ userId: userId, roleId: roleId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Role assigned successfully.");
+                    } else {
+                        alert("Failed to assign role.");
+                    }
+                });
+            } else {
+                alert("Please select a role and provide a valid user ID.");
+            }
+        });
+    </script>
+}

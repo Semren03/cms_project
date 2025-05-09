@@ -21,7 +21,7 @@ namespace cms_project.Controllers
         }
         public IActionResult Index()
         {
-            return View(dbContext.UserAccounts.ToList());
+            return View(dbContext.Set<UserAccount>().ToList());
         }
  
         public IActionResult Create()
@@ -40,7 +40,7 @@ namespace cms_project.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = dbContext.UserAccounts.Include(x=>x.Role)
+                var user = dbContext.Set<UserAccount>().Include(x=>x.Role)
                                                  .ThenInclude(x=>x.Claims)
                                                  .Where(x => x.Email == model.Email  && x.Password == model.Password)
                                                  .AsNoTracking()

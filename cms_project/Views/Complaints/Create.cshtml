@@ -12,13 +12,17 @@
                     <form method="post" enctype="multipart/form-data">
                         <div class="mb-4">
                             <label class="form-label fw-bold">Complaint Type</label>
-                            <select class="form-select" asp-for="ComplaintType">
+                            <select class="form-select" asp-for="@Model.ComplaintTypeId">
                                 <option value="">-- Select Complaint Type --</option>
-                                <option value="Academic">Academic</option>
-                                <option value="Administrative">Administrative</option>
-                                <option value="Infrastructure">Infrastructure</option>
+
+                                @foreach (var complaint in Model.ComplaintTypeList)
+                                {
+                                    <option value="@complaint.Id">@complaint.Name</option>
+
+                                }
+                            
                             </select>
-                            <span asp-validation-for="ComplaintType" class="text-danger"></span>
+                            <span asp-validation-for="ComplaintTypeId" class="text-danger"></span>
                         </div>
 
                         <div class="row mb-3">

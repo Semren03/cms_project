@@ -40,8 +40,8 @@
                 <i class="fas fa-fw fa-cog"></i>
                 <span>Add Complaint</span>
             </a>
-            
-            
+
+
         </li>
 
         <!-- Nav Item - Utilities Collapse Menu -->
@@ -71,15 +71,34 @@
     <div class="sidebar-heading">
 
     </div>
-
-    <!-- Nav Item - Pages Collapse Menu -->
-    @if (Model.Role == "SuperAdmin")
+    @if (Model.Permission.Contains("Manage Complaints"))
     {
         <li class="nav-item">
             <a class="nav-link collapsed" asp-controller="ComplaintList" asp-action="ShowComplaint"
-            aria-expanded="true" aria-controls="collapsePages">
+               aria-expanded="true" aria-controls="collapsePages">
                 <i class="fas fa-fw fa-folder"></i>
                 <span>Complaint List</span>
+            </a>
+        </li>
+    }
+    <!-- Nav Item - Pages Collapse Menu -->
+    @if (Model.Role == "SuperAdmin")
+    {
+       
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" asp-controller="MangementAdmin" asp-action="ManageRoles"
+               aria-expanded="true" aria-controls="collapsePages">
+                <i class="fas fa-fw fa-folder"></i>
+                <span>Management Role</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" asp-controller="MangementAdmin" asp-action="MangementTableUser"
+               aria-expanded="true" aria-controls="collapsePages">
+                <i class="fas fa-fw fa-folder"></i>
+                <span>Management User</span>
             </a>
         </li>
     }

@@ -21,10 +21,11 @@ namespace cms_project.Controllers
             
             
 
-            var userComplaint = context.Complaints.Include(x=>x.UserAccount).Include(x=>x.AttachmentComplaints)
+            var userComplaint = context.Set<Complaint>().Include(x=>x.UserAccount).Include(x=>x.AttachmentComplaints)
+                                                     .Include(x => x.ComplaintType)
                 .Select (x=>new ComplaintListViewModel
                 {
-                       ComplaintType =x.ComplaintType.ToString()    ,
+                       ComplaintType =x.ComplaintType.Name    ,
                        CreatedDate =x.CreatedDate,
                        Description =x.Description,
                        Title =x.Title,
@@ -43,13 +44,14 @@ namespace cms_project.Controllers
                 return BadRequest("Cannot Get User Information");
             }
 
-            var userComplaint = context.Complaints
+            var userComplaint = context.Set<Complaint>()
                 .Where(x => x.CreatedBy == userId)
                 .Include(x => x.UserAccount)
                 .Include(x => x.AttachmentComplaints)
+                .Include(x=>x.ComplaintType)
                 .Select(x => new ComplaintListViewModel
                 {
-                    ComplaintType = x.ComplaintType.ToString(),
+                    ComplaintType = x.ComplaintType.Name,
                     CreatedDate = x.CreatedDate,
                     Description = x.Description,
                     Title = x.Title,

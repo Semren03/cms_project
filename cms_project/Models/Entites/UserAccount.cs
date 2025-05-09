@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +16,8 @@ namespace cms_project.Models.Entites
         public Role Role { get; set; }
 
         public ICollection<Complaint> Complaints { get; set; } = new List<Complaint>();
+
+        public ICollection<Complaint>? AssignedUsers { get; set; }
 
 
 
