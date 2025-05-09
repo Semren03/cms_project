@@ -34,14 +34,7 @@ namespace cms_project.Controllers
         {
             var roles = context.Roles.Include(r => r.Claims).ToList();
 
-            var adminRole = context.Roles.FirstOrDefault(x => x.Name == "SuperAdmin");
 
-            var adminUsers = context.Set<UserAccount>()
-                                     .Include(u => u.Role)
-                                     .Where(u => u.RoleId == adminRole.Id)
-                                     .ToList();
-
-            ViewBag.AdminUsers = adminUsers;
             ViewBag.Roles = roles;
 
             return View(roles);
@@ -70,7 +63,39 @@ namespace cms_project.Controllers
             return View(role);
         }
 
-      
+        [HttpGet]
+        public IActionResult EditRole(int id)
+        {
+            var role = context.Set<Role>().Include(x=>x.Claims).FirstOrDefault(x => x.Id == id);
+            var claims = context.Claims.ToList();
+
+            ViewBag.Claims = new SelectList(claims, "Id", "Name");
+            return View(role);
+        }
+        [HttpPost]
+        public IActionResult UpdateRole(Role role, List<int> selectedClaims)
+        {
+            if (ModelState.IsValid)
+            {
+                var claims = context.Claims.Where(c => selectedClaims.Contains(c.Id))
+                    .ToList();
+                foreach (var claim in claims)
+                {
+                    role.Claims.Add(claim);
+                }
+                context.Roles.Update(role);
+                context.SaveChanges();
+
+                return RedirectToAction("ManageRoles");
+            }
+
+            var allClaims = context.Claims.ToList();
+            ViewBag.Claims = new SelectList(allClaims, "Id", "Name");
+
+            return View(role);
+        }
+
+
         [HttpGet]
         public IActionResult AddUser()
         {

@@ -15,6 +15,7 @@
                         <th>Complaint Type</th>
                         <th>Title</th>
                         <th>Description</th>
+                        <th>Status</th>
                         <th>Created Date</th>
                         <th>Attachment</th>
                     </tr>
@@ -23,12 +24,22 @@
                 <tbody>
                     @foreach(var complaint in Model)
                     {
+                        string statusClass = complaint.Status switch
+                        {
+                            "In Progress" => "bg-success text-white",
+                            "Rejected" => "bg-danger text-white",
+                            "Pending" => "bg-warning text-dark",
+                            "Closed" => "bg-info text-white",
+                            _ => "bg-secondary text-white"
+                        };
+
                         <tr>
 
                             <td>@complaint.Username</td>
                             <td>@complaint.ComplaintType</td>
                             <td>@complaint.Title</td>
                             <td>@complaint.Description</td>
+                            <td class="@statusClass text-center">@complaint.Status</td>
                             <td>@complaint.CreatedDate.ToString("yyyy-MM-dd")</td>
                             <td>
                                 @foreach (var attahment in complaint.Attachment)

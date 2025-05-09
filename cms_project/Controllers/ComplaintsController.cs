@@ -58,6 +58,7 @@ namespace cms_project.Controllers
                     Title = cvm.Title,
                     Description = cvm.Description,
                     CreatedBy = userId  ,
+                    StatusId = 1
                     
             };
             

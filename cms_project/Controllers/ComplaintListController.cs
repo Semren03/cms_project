@@ -30,6 +30,7 @@ namespace cms_project.Controllers
                        Description =x.Description,
                        Title =x.Title,
                        Username= x.UserAccount.Name  ,
+                       Status =x.Status.StatusName,
                        Attachment =x.AttachmentComplaints.Select(x=>  x.AttachmentName).ToList()
                 } )
                 .ToList();
