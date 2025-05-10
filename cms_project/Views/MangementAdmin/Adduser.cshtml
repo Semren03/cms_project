@@ -1,12 +1,14 @@
-﻿@using cms_project.Models.ViewModel
+﻿@using Newtonsoft.Json
+
 @model AddUserRoleViewModel
+
+
 
 <div class="container mt-5">
     <div class="card shadow-sm border-0">
         <div class="card-body">
             <h4 class="card-title mb-4">Assign Role to User</h4>
 
-            <!-- Search Form -->
             <form class="form-inline mb-3" id="userSearchForm">
                 <div class="form-group mr-2">
                     <label for="Email" class="sr-only">User Email</label>
@@ -15,10 +17,8 @@
                 <button type="submit" class="btn btn-primary">Check User</button>
             </form>
 
-            <!-- User Info -->
             <div id="userInfo" class="mb-3"></div>
 
-            <!-- Role Assignment Form -->
             <form asp-action="AddUser" method="post" class="form-inline" id="addRoleForm" style="display:none;">
                 <div class="form-group mr-2">
                     <label for="RoleId" class="mr-2">Select Role:</label>
@@ -30,6 +30,19 @@
                     </select>
                 </div>
                 <input type="hidden" id="userid" name="UserId" />
+
+                <div class="form-group mr-2" id="complaintTypeDropdown" style="display: none;">
+                    <label for="ComplaintTypeId" class="mr-2">Complaint Type:</label>
+                    <select class="form-control" asp-for="ComplaintTypeResolverId" id="ComplaintTypeId">
+                        <option value="-1">Select Type</option>
+
+                        @foreach (var type in Model.ComplaintTypes)
+                        {
+                            <option value="@type.Id">@type.Name</option>
+                        }
+                    </select>
+                </div>
+
                 <button type="submit" class="btn btn-success">Assign Role</button>
             </form>
         </div>
@@ -39,6 +52,21 @@
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+                 const rolesWithClaims = @Html.Raw(JsonConvert.SerializeObject(Model.Roles, new JsonSerializerSettings
+                                {
+                                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                                }))
+                 $('#RoleId').change(function () {
+                     debugger
+            const selectedRoleId = $(this).val();
+
+            if (selectedRoleId && selectedRoleId=="1012") {
+                $('#complaintTypeDropdown').show();
+            } else {
+                $('#complaintTypeDropdown').hide();
+                $('#ComplaintTypeId').val("-1");
+            }
+        });
         $('#userSearchForm').submit(function (e) {
             e.preventDefault();
             const userEmail = $('#Email').val();
@@ -53,6 +81,11 @@
                         $('#userid').val(data.user.id);
                         $('#addRoleForm').fadeIn();
                         $('#RoleId').val(data.user.roleId);
+                        debugger
+                        if(data.user.complaintTypeResolverId !=null){
+                $('#complaintTypeDropdown').show();
+                $('#ComplaintTypeId').val(data.user.complaintTypeResolverId);
+                        }
                     } else {
                         $('#userInfo').html(`<div class="alert alert-danger">❌ User not found.</div>`);
                         $('#addRoleForm').hide();

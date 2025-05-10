@@ -2,7 +2,9 @@
 {
     public class ComplaintListViewModel
     {
+        public Guid Id { get; set; }
         public string ComplaintType { get; set; }
+        public int ComplaintTypeId { get; set; }
         public DateTime CreatedDate { get; set; }
         public string Username { get; set; }
         public string Title { get; set; }

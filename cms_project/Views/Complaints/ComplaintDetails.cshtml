@@ -1,0 +1,86 @@
+﻿@model ComplaintListViewModel
+<section id="personal-information-content" class="tab-content active pt-0">
+    <div class="row">
+        <div class="col-lg-6">
+            <div id="fixed-autocomplete-container" class="position-relative">
+                <label for="txtEmployeeName">Complaint Title</label>
+                <input type="text" id="txtEmployeeName" maxlength="150" class="inputCustom" disabled asp-for="Title"/>
+                <span class="invalid-feedback" style="display: none;"></span>
+
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div id="fixed-autocomplete-container-2" class="position-relative">
+                <label for="txtEmployeeNo">Complaint Type</label>
+                <input type="text" id="txtEmployeeNo" maxlength="150" class="inputCustom" disabled  asp-for="ComplaintType"/>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div>
+                <label for="txtRequestDate">Request Date</label>
+                <div class="position-relative">
+                    <input type="text" id="txtRequestDate" maxlength="150" class="inputCustom" disabled asp-for="CreatedDate" />
+                    <div style="background-color:#F1D68E !important" class="position-absolute calender-icon right-0 top-0"><img src="~/images/calendar-icon.svg" alt="calendar"></div>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div>
+                <label for="txtPosition">Created By</label>
+                <input type="text" id="txtPosition" maxlength="150" class="inputCustom" disabled asp-for="Username"/>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div>
+                <label for="txtDepartment">Status</label>
+                <input type="text" id="txtDepartment" maxlength="150" class="inputCustom" disabled asp-for="Status" />
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <div>
+                <label for="txtComments">Description</label>
+                <textarea class="w-100" id="txtComments" maxlength="1000" class="is-valid" asp-for="Description" disabled></textarea>
+            </div>
+
+        </div>
+        <div class="col-lg-6 ">
+            <div>
+                <div class="form-item attachments">
+                    Attachment
+                </div>
+                @foreach(var file in Model.Attachment)
+                {
+                    <div style="gap:5px" class="d-flex align-items-center attatch-view">
+                        <img src="~/images/file.svg" alt="file icon" />
+                        <a href="\attachment\@file" target="_blank" class="text-truncate d-inline-block file-link" style="text-decoration:underline !important; max-width: 250px;" title="@file">@file</a>
+                    </div>
+                }
+             
+                    </div>
+            </div>
+
+        <div class="col-lg-10 " style="margin-top:20px">
+            
+            <div class="d-flex align-items-end gap-2">
+                <form asp-action="AssignTo" method="post">
+                    <!-- Hidden field for complaintId -->
+                    <input type="hidden" name="complaintId" value="@Model.Id" />
+
+                    <!-- Dropdown for userId -->
+                    <label class="mb-3" for="ddlWfType">Assign To</label>
+                    <div class="d-flex align-items-end gap-2">
+                        <select asp-items="ViewBag.Users" name="userId" id="ddlWfType" class="form-select" style="max-width: 300px; height:49px">
+                            <option value="" selected disabled>Select Assignee</option>
+                        </select>
+
+                        <!-- Submit button -->
+                        <input class="yellow-btn" type="submit" id="btnGo" value="Apply" />
+                    </div>
+                </form>
+            </div>
+        </div>
+       
+        </div>
+
+</section>

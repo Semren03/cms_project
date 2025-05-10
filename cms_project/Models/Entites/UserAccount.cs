@@ -15,6 +15,11 @@ namespace cms_project.Models.Entites
         public int RoleId { get; set; }
         public Role Role { get; set; }
 
+        public ComplaintType ComplaintType { get; set; }
+        public int? ComplaintTypeResolverId {  get; set; }
+
+
+
         public ICollection<Complaint> Complaints { get; set; } = new List<Complaint>();
 
         public ICollection<Complaint>? AssignedUsers { get; set; }

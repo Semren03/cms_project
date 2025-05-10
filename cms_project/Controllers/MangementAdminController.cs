@@ -1,4 +1,5 @@
-﻿using cms_project.Data;
+﻿using System.Security.Claims;
+using cms_project.Data;
 using cms_project.Models.Entites;
 using cms_project.Models.ViewModel;
 using Microsoft.AspNetCore.Mvc;
@@ -75,32 +76,52 @@ namespace cms_project.Controllers
         [HttpPost]
         public IActionResult UpdateRole(Role role, List<int> selectedClaims)
         {
-            if (ModelState.IsValid)
-            {
-                var claims = context.Claims.Where(c => selectedClaims.Contains(c.Id))
-                    .ToList();
-                foreach (var claim in claims)
-                {
-                    role.Claims.Add(claim);
-                }
-                context.Roles.Update(role);
-                context.SaveChanges();
+            var roleExist = context.Roles
+                .Include(r => r.Claims)
+                .FirstOrDefault(r => r.Id == role.Id);
 
-                return RedirectToAction("ManageRoles");
+            if (roleExist == null)
+                return NotFound();
+
+            // Update scalar properties
+            roleExist.Name = role.Name;
+
+            var claimsToAdd = context.Claims
+                .Where(c => selectedClaims.Contains(c.Id))
+                .ToList();
+
+            var existingClaimIds = roleExist.Claims.Select(c => c.Id).ToList();
+
+            // Add new claims
+            foreach (var claim in claimsToAdd)
+            {
+                if (!existingClaimIds.Contains(claim.Id))
+                {
+                    roleExist.Claims.Add(claim);
+                }
             }
 
-            var allClaims = context.Claims.ToList();
-            ViewBag.Claims = new SelectList(allClaims, "Id", "Name");
+            // Optional: remove unchecked claims
+            var claimsToRemove = roleExist.Claims
+                .Where(c => !selectedClaims.Contains(c.Id))
+                .ToList();
 
-            return View(role);
+            foreach (var claim in claimsToRemove)
+            {
+                roleExist.Claims.Remove(claim);
+            }
+
+            context.SaveChanges();
+            return RedirectToAction("ManageRoles");
         }
 
 
         [HttpGet]
         public IActionResult AddUser()
         {
-            var roles = context.Set<Role>().AsNoTracking().ToList();
-            return View(new AddUserRoleViewModel { Roles =roles});
+            var roles = context.Set<Role>().Include(x=>x.Claims).AsNoTracking().ToList();
+            var categories = context.Set<ComplaintType>().AsNoTracking().ToList();  
+            return View(new AddUserRoleViewModel { Roles =roles,ComplaintTypes=categories});
         }
 
         [HttpPost]
@@ -108,8 +129,15 @@ namespace cms_project.Controllers
         {
             var user = context.Set<UserAccount>()
                                .FirstOrDefault(u => u.Id ==model.UserId);
-            user.RoleId = model.RoleId; 
-            context.Update(user);
+            user.RoleId = model.RoleId;
+            if (model.ComplaintTypeResolverId != null && model.ComplaintTypeResolverId > 0)
+            {
+                user.ComplaintTypeResolverId = model.ComplaintTypeResolverId;
+            }
+            else
+                user.ComplaintTypeResolverId = null;
+
+                context.Update(user);
             context.SaveChanges();
             return Redirect("MangementTableUser");
         }
@@ -124,7 +152,7 @@ namespace cms_project.Controllers
                 return Json(new { success = false, message = "User not found" });
             }
 
-            return Json(new { success = true, user = new {user.Id, user.Name, user.Email ,user.RoleId} });
+            return Json(new { success = true, user = new {user.Id, user.Name, user.Email ,user.RoleId,user.ComplaintTypeResolverId} });
         }
 
 

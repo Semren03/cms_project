@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using cms_project.Data;
 
@@ -11,9 +12,11 @@ using cms_project.Data;
 namespace cms_project.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250510142636_Complainttypecatigores")]
+    partial class Complainttypecatigores
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,7 +43,7 @@ namespace cms_project.Migrations
 
                     b.HasIndex("ComplaintId");
 
-                    b.ToTable("AttachmentComplaints", (string)null);
+                    b.ToTable("AttachmentComplaints");
                 });
 
             modelBuilder.Entity("ClaimsRole", b =>
@@ -55,7 +58,7 @@ namespace cms_project.Migrations
 
                     b.HasIndex("RolesId");
 
-                    b.ToTable("ClaimsRole", (string)null);
+                    b.ToTable("ClaimsRole");
                 });
 
             modelBuilder.Entity("Complaint", b =>
@@ -99,7 +102,7 @@ namespace cms_project.Migrations
 
                     b.HasIndex("StatusId");
 
-                    b.ToTable("Complaint", (string)null);
+                    b.ToTable("Complaint");
                 });
 
             modelBuilder.Entity("cms_project.Models.Entites.Claims", b =>
@@ -116,7 +119,7 @@ namespace cms_project.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Claims", (string)null);
+                    b.ToTable("Claims");
                 });
 
             modelBuilder.Entity("cms_project.Models.Entites.ComplaintType", b =>
@@ -134,7 +137,7 @@ namespace cms_project.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ComplaintTypes", (string)null);
+                    b.ToTable("ComplaintTypes");
                 });
 
             modelBuilder.Entity("cms_project.Models.Entites.Role", b =>
@@ -151,7 +154,7 @@ namespace cms_project.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles", (string)null);
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("cms_project.Models.Entites.Status", b =>
@@ -168,7 +171,7 @@ namespace cms_project.Migrations
 
                     b.HasKey("StatusId");
 
-                    b.ToTable("Status", (string)null);
+                    b.ToTable("Status");
                 });
 
             modelBuilder.Entity("cms_project.Models.Entites.UserAccount", b =>
@@ -203,7 +206,7 @@ namespace cms_project.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("UserAccount", (string)null);
+                    b.ToTable("UserAccount");
                 });
 
             modelBuilder.Entity("AttachmentComplaint", b =>

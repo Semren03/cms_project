@@ -5,24 +5,25 @@ using cms_project.Models.ViewModel;
 using cms_project.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace cms_project.Controllers
 {
      
     public class ComplaintsController : Controller
     {
-        private readonly ApplicationDbContext dbContext;
+        private readonly ApplicationDbContext context;
         private readonly IWebHostEnvironment environment;
         public ComplaintsController(ApplicationDbContext dbContext , IWebHostEnvironment environment) 
         { 
-        this.dbContext = dbContext;
+        this.context = dbContext;
         this.environment = environment;
         }
         [HttpGet]
         public IActionResult Create()
         {
 
-            var complaintTypes= dbContext.ComplaintTypes.Select(x=>new ComplaintTypesViewModel
+            var complaintTypes= context.ComplaintTypes.Select(x=>new ComplaintTypesViewModel
             {
                Id  = x.Id,
                Name =x.Name,
@@ -36,7 +37,7 @@ namespace cms_project.Controllers
 
             if (!ModelState.IsValid) 
             {
-                var complaintTypes = dbContext.ComplaintTypes.Select(x => new ComplaintTypesViewModel
+                var complaintTypes = context.ComplaintTypes.Select(x => new ComplaintTypesViewModel
                 {
                     Id = x.Id,
                     Name = x.Name,
@@ -90,11 +91,131 @@ namespace cms_project.Controllers
 
            
 
-            dbContext.Set<Complaint>().Add(complaint);
-            await dbContext.SaveChangesAsync();
+            context.Set<Complaint>().Add(complaint);
+            await context.SaveChangesAsync();
           var x =  new EmailService();
             x.Send(userEmail,"Complaint Submited",$"Dear {User.FindFirstValue("Name")}, Thank you for Submited The Complaint" );
             return RedirectToAction("Create","Complaints");
+        }
+
+        [HttpGet]
+        public IActionResult ShowComplaint()
+        {
+
+            var userComplaint = context.Set<Complaint>().Include(x => x.UserAccount).Include(x => x.AttachmentComplaints)
+                                                     .Include(x => x.ComplaintType)
+                .Select(x => new ComplaintListViewModel
+                {
+                    Id = x.Id,
+                    ComplaintType = x.ComplaintType.Name,
+                    CreatedDate = x.CreatedDate,
+                    Description = x.Description,
+                    Title = x.Title,
+                    Username = x.UserAccount.Name,
+                    Status = x.Status.StatusName,
+                    Attachment = x.AttachmentComplaints.Select(x => x.AttachmentName).ToList()
+                })
+                .ToList();
+            return View(userComplaint);
+        }
+        [HttpGet]
+        public IActionResult ShowHistoryComplaint()
+        {
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!int.TryParse(userIdClaim, out int userId))
+            {
+                return BadRequest("Cannot Get User Information");
+            }
+
+            var userComplaint = context.Set<Complaint>()
+                .Where(x => x.CreatedBy == userId)
+                .Include(x => x.UserAccount)
+                .Include(x => x.AttachmentComplaints)
+                .Include(x => x.ComplaintType)
+                .Select(x => new ComplaintListViewModel
+                {
+                    ComplaintType = x.ComplaintType.Name,
+                    CreatedDate = x.CreatedDate,
+                    Description = x.Description,
+                    Title = x.Title,
+                    Attachment = x.AttachmentComplaints
+                                 .Select(x => x.AttachmentName).ToList()
+
+                })
+                .ToList();
+
+            return View(userComplaint);
+        }
+
+        public async Task<IActionResult> ComplaintDetails(Guid id)
+        {
+
+
+            var complaint = await context.Set<Complaint>()
+              .Where(c => c.Id.Equals(id))
+              .Select(x => new ComplaintListViewModel
+              {
+                  Id = x.Id,
+                  ComplaintType = x.ComplaintType.Name,
+                  ComplaintTypeId = x.ComplaintType.Id,
+                  CreatedDate = x.CreatedDate,
+                  Description = x.Description,
+                  Title = x.Title,
+                  Username = x.UserAccount.Name,
+                  Status = x.Status.StatusName,
+                  Attachment = x.AttachmentComplaints.Select(a => a.AttachmentName).ToList()
+              })
+               .FirstOrDefaultAsync();
+
+            var users = await context.Set<UserAccount>().Where(x=>x.ComplaintTypeResolverId ==complaint.ComplaintTypeId).ToListAsync();
+            ViewBag.Users = new SelectList(users, "Id", "Name");
+
+
+            return View(complaint);
+        }
+
+        public async Task<IActionResult> InboxComplaint()
+        {
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!int.TryParse(userIdClaim, out int userId))
+            {
+                return BadRequest("Cannot Get User Information");
+            }
+
+            var userComplaint = context.Set<Complaint>()
+                .Where(x => x.AssignedTo == userId)
+                .Include(x => x.UserAccount)
+                .Include(x => x.AttachmentComplaints)
+                .Include(x => x.ComplaintType)
+                .Select(x => new ComplaintListViewModel
+                {
+                    Id=x.Id,
+                    ComplaintType = x.ComplaintType.Name,
+                    CreatedDate = x.CreatedDate,
+                    Title = x.Title,
+                    Status=x.Status.StatusName,
+                    Username =x.UserAccount.Name,
+               
+
+                })
+                .ToList();
+
+            return View(userComplaint);
+        }
+
+        [HttpPost]
+        public IActionResult AssignTo(Guid complaintId, int userId)
+        {
+            var complaint = context.Set<Complaint>().FirstOrDefault(x => x.Id.Equals(complaintId));
+
+            complaint.AssignedTo = userId;
+            complaint.StatusId = 3; 
+            context.Update(complaint);
+            context.SaveChanges();
+
+
+            return RedirectToAction("Complaints");
+
         }
 
 

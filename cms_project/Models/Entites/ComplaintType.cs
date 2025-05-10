@@ -4,7 +4,7 @@ namespace cms_project.Models.Entites
 {
     public class ComplaintType
     {
-        [Key]
+ 
         public int Id { get; set; }
 
         [Required]
@@ -12,6 +12,8 @@ namespace cms_project.Models.Entites
         public string Name { get; set; }
 
         public ICollection<Complaint> Complaints { get; set; } = new List<Complaint>();
+
+        public ICollection<UserAccount> UserAccounts { get; set; }
     }
 
 }

@@ -61,7 +61,7 @@ namespace cms_project.Controllers
                     var claimsIdentity = new ClaimsIdentity (claims, "CookieAuth");
                     HttpContext.SignInAsync("CookieAuth", new ClaimsPrincipal(claimsIdentity));
 
-                    return RedirectToAction("SecurePage");
+                    return RedirectToAction("Index","Dashboard");
                 }
                 else
                 {

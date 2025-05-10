@@ -1,22 +1,59 @@
-html {
-  font-size: 14px;
-}
-
-@media (min-width: 768px) {
-  html {
+.inputCustom {
     font-size: 16px;
-  }
+    border: 2px solid #d9ebd8;
+    border-radius: 13px !important;
+    color: #222222;
+    height: 50px !important;
+    margin-right: 30px;
+    padding: 0 16px;
+    width: 100% !important;
+    z-index: 2;
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+.calender-icon {
+    right: 0;
+    width: 50px;
+    height: 50px;
+    border-top-right-radius: 13px;
+    border-bottom-right-radius: 13px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #ffca3a;
+    background-color: rgb(255, 202, 58);
+    cursor: pointer;
 }
-
-html {
-  position: relative;
-  min-height: 100%;
+textarea {
+    height: 85px;
+    background-color: white;
+    border: 2px solid #d9ebd8 !important;
+    border-radius: 13px;
+    padding: 10px 16px;
+    font-size: 14px;
+    color: #222222;
+    resize: none;
 }
-
-body {
-  margin-bottom: 60px;
+.assignToSelect {
+    font-size: 16px !important;
+    border: 2px solid #d9ebd8 !important;
+    border-radius: 13px !important;
+    min-width: 100%;
+    color: #222222 !important;
+    height: 50px;
+    margin-right: 30px;
+    padding: 0 16px;
+/*    background-image: url(/sites/APC/EN/Site Assets/Images/arrow-down.svg) !important;*/
+    min-width: 495px;
+    max-width: 495px;
+}
+.yellow-btn, .cancel-btn {
+    padding: 0 30px !important;
+    background-color: #ffca3a;
+    color: #ffffff !important;
+    border: none;
+    text-align: center;
+    border-radius: 13px;
+    height: 50px;
+    cursor: pointer;
+    font-size: 16px;
 }

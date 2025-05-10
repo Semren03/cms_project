@@ -15,8 +15,8 @@ namespace cms_project.Data
 
         public DbSet<Claims> Claims { get; set; }
 
-
         public DbSet<ComplaintType> ComplaintTypes { get; set; }
+
 
 
 
@@ -42,6 +42,12 @@ namespace cms_project.Data
                .WithMany(u => u.Complaints)
                .HasForeignKey(c => c.StatusId)
                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<UserAccount>()
+                .HasOne(x => x.ComplaintType)
+                .WithMany(c => c.UserAccounts)
+                .HasForeignKey(c => c.ComplaintTypeResolverId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
 
 
