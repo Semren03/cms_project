@@ -9,7 +9,7 @@ namespace cms_project.Services
       public  void Send(string toEmail,string subject,string body)
         {
             // message => subject, body ,to ,from
-            var message = new MailMessage("3220601094@std.wise.edu.jo", toEmail, subject,body);
+            var message = new MailMessage("3220601094@std.wise.edu.jo", "ahmadsk1921@gmail.com", subject,body);
 
             SmtpClient smtp = new SmtpClient("smtp-mail.outlook.com", 587);
  

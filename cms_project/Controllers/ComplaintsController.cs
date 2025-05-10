@@ -3,6 +3,7 @@ using cms_project.Data;
 using cms_project.Models.Entites;
 using cms_project.Models.ViewModel;
 using cms_project.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -206,14 +207,27 @@ namespace cms_project.Controllers
         [HttpPost]
         public IActionResult AssignTo(Guid complaintId, int userId)
         {
-            var complaint = context.Set<Complaint>().FirstOrDefault(x => x.Id.Equals(complaintId));
+            var complaint = context.Set<Complaint>().Include(x=>x.UserAccount).FirstOrDefault(x => x.Id.Equals(complaintId));
 
             complaint.AssignedTo = userId;
             complaint.StatusId = 3; 
             context.Update(complaint);
             context.SaveChanges();
 
+            var assigne = context.Set<UserAccount>().AsNoTracking().FirstOrDefault(x => x.Id == userId);
+            
+            var e = new EmailService();
+            e.Send(complaint.UserAccount.Email, "Your Complaint is in Progress",
+                 string.Format(
+              "Dear {0},\n\nYour complaint is currently in progress and has been assigned to {1}. Please wait while we work to resolve it.\n\nThank you for your patience.\n\nBest regards,\nSupport Team",
+             complaint.UserAccount.Name ,assigne.Name
+              ));
 
+            e.Send(assigne.Email, "New Complaint Assigned to You",
+                 string.Format(
+              "Dear {0},\n\nA new complaint titled \"{1}\" has been assigned to you. Please check the complaint details and take the necessary action.\n\nBest regards,\nSupport Team",
+               assigne.Name, complaint.Title
+                  ));
             return RedirectToAction("Complaints");
 
         }
