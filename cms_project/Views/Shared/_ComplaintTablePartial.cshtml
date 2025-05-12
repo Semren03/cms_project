@@ -15,6 +15,18 @@
             <tbody>
                 @foreach (var complaint in Model)
                 {
+                   
+        var status = complaint.Status?.ToLower();
+        string textClass = status switch
+        {
+            "pending" => "text-warning",
+            "in progress" => "text-primary",
+            "resolved" => "text-success",
+            "closed" => "text-secondary",
+            "rejected" => "text-danger",
+            "reopen" => "text-info",
+            _ => "text-muted"
+        };
                     <tr>
                         <td>
                             <a href="@Url.Action("ComplaintDetails", "Complaints", new { id = complaint.Id })">
@@ -23,7 +35,7 @@
                         </td>
                         <td>@complaint.ComplaintType</td>
                         <td>@complaint.Username</td>
-                        <td>@complaint.Status</td>
+                        <td class="@textClass">@complaint.Status</td>
                         <td>@complaint.CreatedDate.ToString("yyyy-MM-dd")</td>
                     </tr>
                 }

@@ -41,10 +41,20 @@ public class Complaint
     public int? AssignedTo { get; set; }
     public UserAccount AssignedUser { get; set; }
 
-    public int? StatusId { get; set; }
+    public int StatusId { get; set; }
 
     [ForeignKey(nameof(StatusId))]
     public Status Status { get; set; }
 
     public List<AttachmentComplaint> AttachmentComplaints { get; set; } =new List<AttachmentComplaint>();
+    public List<ComplaintHistory> ComplaintHistories { get; set; } = new List<ComplaintHistory>();
+}
+   public enum ComplaintStatus
+{
+    Pending = 1,
+    InProgress = 3,
+    Resolved = 4 ,
+    Closed = 5,
+    Rejected = 6
+
 }

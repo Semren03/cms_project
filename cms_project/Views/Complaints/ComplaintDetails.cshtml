@@ -1,4 +1,9 @@
 ﻿@model ComplaintListViewModel
+@{
+    bool isAssigned = Model.AssignToId > 0 ? false : true;
+    bool isAssigner = Model.AssignToId == Convert.ToInt32( ViewBag.userId);
+    bool isInisiator = Model.CreatedBy == Convert.ToInt32(ViewBag.userId);
+}
 <section id="personal-information-content" class="tab-content active pt-0">
     <div class="row">
         <div class="col-lg-6">
@@ -13,7 +18,7 @@
             <div id="fixed-autocomplete-container-2" class="position-relative">
                 <label for="txtEmployeeNo">Complaint Type</label>
                 <input type="text" id="txtEmployeeNo" maxlength="150" class="inputCustom" disabled
-                       asp-for="ComplaintType" />
+                asp-for="ComplaintType" />
             </div>
         </div>
         <div class="col-lg-6">
@@ -21,11 +26,11 @@
                 <label for="txtRequestDate">Request Date</label>
                 <div class="position-relative">
                     <input type="text" id="txtRequestDate" maxlength="150" class="inputCustom" disabled
-                           asp-for="CreatedDate" />
+                    asp-for="CreatedDate" />
                     <div style="background-color:#F1D68E !important"
-                         class="position-absolute calender-icon right-0 top-0">
+                    class="position-absolute calender-icon right-0 top-0">
                         <img src="~/images/calendar-icon.svg"
-                             alt="calendar">
+                        alt="calendar">
                     </div>
                 </div>
 
@@ -47,7 +52,7 @@
             <div>
                 <label for="txtComments">Description</label>
                 <textarea class="w-100" id="txtComments" maxlength="1000" class="is-valid" asp-for="Description"
-                          disabled></textarea>
+                disabled></textarea>
             </div>
 
         </div>
@@ -61,44 +66,87 @@
                     <div style="gap:5px" class="d-flex align-items-center attatch-view">
                         <img src="~/images/file.svg" alt="file icon" />
                         <a href="\attachment\@file" target="_blank" class="text-truncate d-inline-block file-link"
-                           style="text-decoration:underline !important; max-width: 250px;" title="@file">@file</a>
+                        style="text-decoration:underline !important; max-width: 250px;" title="@file">@file</a>
                     </div>
                 }
 
             </div>
         </div>
+        @if (isAssigned && Model.StatusId == 3)
+        {
+            <div class="col-lg-10 " style="margin-top:20px">
 
-        <div class="col-lg-10 " style="margin-top:20px">
+                <div class="d-flex align-items-end gap-2">
+                    <form asp-action="AssignTo" method="post">
+                        <!-- Hidden field for complaintId -->
+                        <input type="hidden" name="complaintId" value="@Model.Id" />
 
-            <div class="d-flex align-items-end gap-2">
-                <form asp-action="AssignTo" method="post">
-                    <!-- Hidden field for complaintId -->
-                    <input type="hidden" name="complaintId" value="@Model.Id" />
+                        <!-- Dropdown for userId -->
+                        <label class="mb-3" for="ddlWfType">Assign To</label>
+                        <div class="d-flex align-items-end gap-2">
+                            <select asp-items="ViewBag.Users" name="userId" id="ddlWfType" class="form-select"
+                            style="max-width: 300px; height:49px">
+                                <option value="" selected disabled>Select Assignee</option>
+                            </select>
 
-                    <!-- Dropdown for userId -->
-                    <label class="mb-3" for="ddlWfType">Assign To</label>
-                    <div class="d-flex align-items-end gap-2">
-                        <select asp-items="ViewBag.Users" name="userId" id="ddlWfType" class="form-select"
-                                style="max-width: 300px; height:49px">
-                            <option value="" selected disabled>Select Assignee</option>
-                        </select>
-
-                        <!-- Submit button -->
-                        <input class="yellow-btn" type="submit" id="btnGo" value="Apply" />
-                    </div>
-                </form>
+                            <!-- Submit button -->
+                            <input class="yellow-btn" type="submit" id="btnGo" value="Apply" />
+                        </div>
+                    </form>
+                </div>
             </div>
+        }
+
+        <div class="row">
+            <div class="col-lg-12 mt-5">
+                <h2 class="sub-header">History</h2>
+                <div style="overflow-x: auto">
+                    <table class="TaskHistory table-history grid table-striped">
+                        <thead>
+                            <tr>
+                                <th>Action By</th>
+                                <th>Action</th>
+                                <th>Comments</th>
+                                <th>Action Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="taskHistoryBody">
+                            @foreach(var history in Model.ComplaintHistories)
+                            {
+                                <tr>
+                                    <td>@history.ResolverName</td>
+                                    <td>@history.ActionStatus</td>
+                                    <td>@history.Comments</td>
+                                    <td>@history.CreatedDate.ToShortDateString()</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
         </div>
 
-        <form>
-            <div id="ApprovalModeDiv" style="margin-top:20px" class="row gy-3 gy-lg-4">
-                <div class="col-lg-5">
-                    <div>
-                        <label for="ddlAction">Action</label>
-                        <select id="ddlAction" class="form-select">
-                            <option value="-1">Select an action</option>
-                            <option value="4">Resolve</option>
-                            <option value="6">Rejecte</option>
+        @if ((!isAssigned && isAssigner && Model.StatusId ==3) || (isInisiator && Model.StatusId == 1002 || Model.StatusId == 4))
+        {
+            <form method="post" action="@Url.Action("AddHistory", "Complaints")">
+                <div id="ApprovalModeDiv" style="margin-top:20px" class="row gy-3 gy-lg-4">
+                    <div class="col-lg-5">
+                        <div>
+                            <label for="ddlAction">Action</label>
+                            <select id="ddlAction" name="actionStatus" class="form-select">
+                                <option value="-1">Select an action</option>
+                                @if (isInisiator)
+                                {
+                                    <option value="5">Close</option>
+                                    <option value="1002">ReOpen</option>
+                                }
+                                else
+                                {
+                                    <option value="4">Resolve</option>
+                                    <option value="6">Reject</option>
+                                }
+                                
                         </select>
                         <span id="rfvAction" class="invalid-feedback" style="display: none;"></span>
                     </div>
@@ -106,17 +154,19 @@
                 <div class="col-lg-12">
                     <div>
                         <label for="txtCommentsApporval">Comments</label>
-                        <textarea class="w-100" id="txtCommentsApporval" 
-                                  maxlength="1000"></textarea>
+                        <textarea name="comments" id="txtCommentsApporval" class="w-100" maxlength="1000"></textarea>
                         <span id="rfvComments" class="invalid-feedback" style="display: none;"></span>
-
                     </div>
                 </div>
-
-
             </div>
             <div id="approval-form" class="d-flex gap-3 mt-40">
-                <button id="btnSubmit" class="yellow-btn" >Submit</button>
+                <input type="hidden" name="complaintId" value="@Model.Id" />
+                <button type="submit" id="btnSubmit" class="yellow-btn">Submit</button>
             </div>
         </form>
+        }
+        
+
+        
+
 </section>

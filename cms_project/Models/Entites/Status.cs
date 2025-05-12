@@ -7,5 +7,7 @@
         public string StatusName { get; set; }
         
         public ICollection<Complaint> Complaints { get; set; }
+
+        public ICollection<ComplaintHistory> ComplaintsHistory { get; set; }
     }
 }

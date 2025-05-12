@@ -119,6 +119,44 @@ namespace cms_project.Migrations
                     b.ToTable("Claims", (string)null);
                 });
 
+            modelBuilder.Entity("cms_project.Models.Entites.ComplaintHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ActionStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Comments")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("ComplaintId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ResolverName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("StatusId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ComplaintId");
+
+                    b.HasIndex("StatusId");
+
+                    b.ToTable("ComplaintHistory", (string)null);
+                });
+
             modelBuilder.Entity("cms_project.Models.Entites.ComplaintType", b =>
                 {
                     b.Property<int>("Id")
@@ -265,6 +303,21 @@ namespace cms_project.Migrations
                     b.Navigation("UserAccount");
                 });
 
+            modelBuilder.Entity("cms_project.Models.Entites.ComplaintHistory", b =>
+                {
+                    b.HasOne("Complaint", "Complaint")
+                        .WithMany("ComplaintHistories")
+                        .HasForeignKey("ComplaintId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("cms_project.Models.Entites.Status", null)
+                        .WithMany("ComplaintsHistory")
+                        .HasForeignKey("StatusId");
+
+                    b.Navigation("Complaint");
+                });
+
             modelBuilder.Entity("cms_project.Models.Entites.UserAccount", b =>
                 {
                     b.HasOne("cms_project.Models.Entites.ComplaintType", "ComplaintType")
@@ -286,6 +339,8 @@ namespace cms_project.Migrations
             modelBuilder.Entity("Complaint", b =>
                 {
                     b.Navigation("AttachmentComplaints");
+
+                    b.Navigation("ComplaintHistories");
                 });
 
             modelBuilder.Entity("cms_project.Models.Entites.ComplaintType", b =>
@@ -303,6 +358,8 @@ namespace cms_project.Migrations
             modelBuilder.Entity("cms_project.Models.Entites.Status", b =>
                 {
                     b.Navigation("Complaints");
+
+                    b.Navigation("ComplaintsHistory");
                 });
 
             modelBuilder.Entity("cms_project.Models.Entites.UserAccount", b =>

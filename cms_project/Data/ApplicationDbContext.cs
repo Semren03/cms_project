@@ -9,6 +9,8 @@ namespace cms_project.Data
             {  
 
             }
+        
+
         public DbSet<AttachmentComplaint> AttachmentComplaints { get; set; }
 
         public DbSet<Role> Roles { get; set; } 
@@ -16,6 +18,8 @@ namespace cms_project.Data
         public DbSet<Claims> Claims { get; set; }
 
         public DbSet<ComplaintType> ComplaintTypes { get; set; }
+
+
 
 
 
@@ -48,7 +52,15 @@ namespace cms_project.Data
                 .WithMany(c => c.UserAccounts)
                 .HasForeignKey(c => c.ComplaintTypeResolverId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ComplaintHistory>()
+                .HasOne(x => x.Complaint)
+                .WithMany(c => c.ComplaintHistories)
+                .HasForeignKey(x => x.ComplaintId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
+
+        
 
 
     }
