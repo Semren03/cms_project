@@ -19,6 +19,9 @@ namespace cms_project.Data
 
         public DbSet<ComplaintType> ComplaintTypes { get; set; }
 
+        public DbSet<Status> Statuses { get; set; }
+
+
 
 
 

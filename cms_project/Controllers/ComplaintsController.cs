@@ -89,9 +89,6 @@ namespace cms_project.Controllers
                 }
             }
             
-          
-
-           
 
             context.Set<Complaint>().Add(complaint);
             await context.SaveChangesAsync();
@@ -176,6 +173,7 @@ namespace cms_project.Controllers
                   Attachment = x.AttachmentComplaints.Select(a => a.AttachmentName).ToList()   ,
                   ComplaintHistories = x.ComplaintHistories ,
                   AssignToId =x.AssignedTo ?? 0,
+                  AssigneeName = x.AssignedUser.Name ?? "Not Assigned",
                   StatusId = x.StatusId,
                   CreatedBy =x.CreatedBy
               })
@@ -249,7 +247,7 @@ namespace cms_project.Controllers
               "Dear {0},\n\nA new complaint titled \"{1}\" has been assigned to you. Please check the complaint details and take the necessary action.\n\nBest regards,\nSupport Team",
                assigne.Name, complaint.Title
                   ));
-            return RedirectToAction("Complaints");
+            return RedirectToAction("ComplaintDetails", new { id = complaintId });
 
         }
 

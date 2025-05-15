@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using cms_project.Data;
 
@@ -11,9 +12,11 @@ using cms_project.Data;
 namespace cms_project.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250515110632_addrequest")]
+    partial class addrequest
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -175,24 +178,6 @@ namespace cms_project.Migrations
                     b.ToTable("ComplaintTypes");
                 });
 
-            modelBuilder.Entity("cms_project.Models.Entites.Request", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("StatusId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("StatusId");
-
-                    b.ToTable("Requests");
-                });
-
             modelBuilder.Entity("cms_project.Models.Entites.Role", b =>
                 {
                     b.Property<int>("Id")
@@ -224,7 +209,7 @@ namespace cms_project.Migrations
 
                     b.HasKey("StatusId");
 
-                    b.ToTable("Statuses");
+                    b.ToTable("Status");
                 });
 
             modelBuilder.Entity("cms_project.Models.Entites.UserAccount", b =>
@@ -337,17 +322,6 @@ namespace cms_project.Migrations
                     b.Navigation("Complaint");
                 });
 
-            modelBuilder.Entity("cms_project.Models.Entites.Request", b =>
-                {
-                    b.HasOne("cms_project.Models.Entites.Status", "Status")
-                        .WithMany("Requests")
-                        .HasForeignKey("StatusId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Status");
-                });
-
             modelBuilder.Entity("cms_project.Models.Entites.UserAccount", b =>
                 {
                     b.HasOne("cms_project.Models.Entites.ComplaintType", "ComplaintType")
@@ -390,8 +364,6 @@ namespace cms_project.Migrations
                     b.Navigation("Complaints");
 
                     b.Navigation("ComplaintsHistory");
-
-                    b.Navigation("Requests");
                 });
 
             modelBuilder.Entity("cms_project.Models.Entites.UserAccount", b =>

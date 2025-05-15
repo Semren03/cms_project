@@ -1,6 +1,6 @@
 ﻿@model ComplaintListViewModel
 @{
-    bool isAssigned = Model.AssignToId > 0 ? false : true;
+    bool isNotAssigned = Model.AssignToId > 0 ? false : true;
     bool isAssigner = Model.AssignToId == Convert.ToInt32( ViewBag.userId);
     bool isInisiator = Model.CreatedBy == Convert.ToInt32(ViewBag.userId);
 }
@@ -48,6 +48,12 @@
                 <input type="text" id="txtDepartment" maxlength="150" class="inputCustom" disabled asp-for="Status" />
             </div>
         </div>
+        <div class="col-lg-6 " >
+            <div>
+                <label for="txtDepartment">Assigne Name</label>
+                <input type="text" id="txtDepartment" maxlength="150" class="inputCustom" disabled asp-for="AssigneeName" />
+            </div>
+        </div>
         <div class="col-lg-12">
             <div>
                 <label for="txtComments">Description</label>
@@ -56,7 +62,7 @@
             </div>
 
         </div>
-        <div class="col-lg-6 ">
+        <div class="col-lg-8 ">
             <div>
                 <div class="form-item attachments">
                     Attachment
@@ -72,7 +78,7 @@
 
             </div>
         </div>
-        @if (isAssigned && Model.StatusId == 3)
+        @if (isNotAssigned && Model.StatusId == 1 && !isInisiator )
         {
             <div class="col-lg-10 " style="margin-top:20px">
 
@@ -96,7 +102,7 @@
                 </div>
             </div>
         }
-
+      
         <div class="row">
             <div class="col-lg-12 mt-5">
                 <h2 class="sub-header">History</h2>
@@ -127,7 +133,7 @@
 
         </div>
 
-        @if ((!isAssigned && isAssigner && Model.StatusId ==3) || (isInisiator && Model.StatusId == 1002 || Model.StatusId == 4))
+        @if ((!isNotAssigned && isAssigner && Model.StatusId == 3) || (isInisiator && (Model.StatusId == 6 ||Model.StatusId ==4) ))
         {
             <form method="post" action="@Url.Action("AddHistory", "Complaints")">
                 <div id="ApprovalModeDiv" style="margin-top:20px" class="row gy-3 gy-lg-4">

@@ -55,6 +55,8 @@ public class Complaint
     InProgress = 3,
     Resolved = 4 ,
     Closed = 5,
-    Rejected = 6
+    Rejected = 6,
+    ReOpen = 1002
+
 
 }

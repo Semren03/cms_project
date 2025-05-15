@@ -17,7 +17,7 @@
                             <th>User Name</th>
                             <th>Email</th>
                             <th>Role</th>
-                            <th>Actions</th>
+                        
                         </tr>
                     </thead>
                     <tbody>
@@ -27,10 +27,7 @@
                                 <td>@user.Name</td>
                                 <td>@user.Email</td>
                                 <td>@user.Role.Name</td>
-                                <td>
-                                    <a href="@Url.Action("Edit", "MangementAdmin", new { id = user.Id })" class="btn btn-warning">Edit</a>
-                                    <a href="@Url.Action("Delete", "MangementAdmin", new { id = user.Id })" class="btn btn-danger">Delete</a>
-                                </td>
+
                             </tr>
                         }
                     </tbody>
