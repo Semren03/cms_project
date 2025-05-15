@@ -158,16 +158,9 @@ sup {
   top: -.5em;
 }
 
-a {
-  color: #4e73df;
-  text-decoration: none;
-  background-color: transparent;
-}
 
-a:hover {
-  color: #224abe;
-  text-decoration: underline;
-}
+
+
 
 a:not([href]):not([class]) {
   color: inherit;
@@ -9591,13 +9584,7 @@ button.bg-dark:focus {
   color: #fff !important;
 }
 
-.text-primary {
-  color: #4e73df !important;
-}
 
-a.text-primary:hover, a.text-primary:focus {
-  color: #224abe !important;
-}
 
 .text-secondary {
   color: #858796 !important;

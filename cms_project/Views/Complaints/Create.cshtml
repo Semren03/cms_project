@@ -1,72 +1,142 @@
 ﻿@using cms_project.Models.ViewModel
 @model ComplaintViewModel;
+<h1>Complaint Register Form </h1>
+<section id="personal-information-content" class="tab-content active pt-0  mt-4">
+    <div class="row">
+        <div class="col-lg-6">
+            <div id="fixed-autocomplete-container" class="position-relative">
+                <label for="txtEmployeeName">Complaint Title</label>
+                <input type="text" id="txtEmployeeName" maxlength="150" class="inputCustom"  asp-for="Title" />
+                <span class="invalid-feedback" style="display: none;"></span>
 
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow mt-4 mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">Submit New Complaint</h4>
-                </div>
-                <div class="card-body">
-                    <form method="post" enctype="multipart/form-data">
-                        <div class="mb-4">
-                            <label class="form-label fw-bold">Complaint Type</label>
-                            <select class="form-select" asp-for="@Model.ComplaintTypeId">
-                                <option value="">-- Select Complaint Type --</option>
-
-                                @foreach (var complaint in Model.ComplaintTypeList)
-                                {
-                                    <option value="@complaint.Id">@complaint.Name</option>
-
-                                }
-                            
-                            </select>
-                            <span asp-validation-for="ComplaintTypeId" class="text-danger"></span>
-                        </div>
-
-                        <div class="row mb-3">
-                            <label class="col-sm-3 col-form-label">Title</label>
-                            <div class="col-sm-9">
-                                <input class="form-control" asp-for="Title">
-                                <span asp-validation-for="Title" class="text-danger"></span>
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <label class="col-sm-3 col-form-label">Description</label>
-                            <div class="col-sm-9">
-                                <textarea class="form-control" asp-for="Description" rows="5"></textarea>
-                                <span asp-validation-for="Description" class="text-danger"></span>
-                            </div>
-                        </div>
-
-
-                        <div class="row mb-4">
-                            <label class="col-sm-3 col-form-label">Upload Files</label>
-                            <div class="col-sm-9">
-                                <input type="file" class="form-control" asp-for="Attachments" multiple>
-                                <small class="text-muted">You can upload multiple files at once</small>
-                                <span asp-validation-for="Attachments" class="text-danger"></span>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-sm-6 d-grid">
-                                <a class="btn btn-outline-secondary" asp-controller="Complaints" asp-action="Index" role="button">
-                                    Cancel
-                                </a>
-                            </div>
-                            <div class="col-sm-6 d-grid">
-                                <button type="submit" class="btn btn-primary">Submit</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
             </div>
         </div>
-    </div>
+        <div class="col-lg-6">
+
+            <div class="position-relative">
+                    <label for="txtRequestDate">Request Date</label>
+                    <div class="position-relative">
+                        <input type="text" id="txtRequestDate" maxlength="150" class="inputCustom" disabled
+                               asp-for="CreatedDate" />
+                        <div style="background-color:#F1D68E !important"
+                             class="position-absolute calender-icon right-0 top-0">
+                            <img src="~/images/calendar-icon.svg"
+                                 alt="calendar">
+                        </div>
+                    </div>
+
+                </div>
+                </div>
+            <div class="col-lg-12 mt-2">
+                <div>
+                    <label for="txtComments">Description</label>
+                    <textarea class="w-100" id="txtComments" maxlength="1000" class="is-valid" asp-for="Description"
+                              ></textarea>
+                </div>
+
+            </div>
+        <div class="col-lg-6 mt-2">
+            <div id="fixed-autocomplete-container" class="position-relative">
+                <label for="txtEmployeeName">Complaint Category</label>
+                <select class="inputCustom form-select" asp-for="@Model.ComplaintTypeId">
+                    <option value="">-- Select Complaint Type --</option>
+
+                    @foreach (var complaint in Model.ComplaintTypeList)
+                    {
+                        <option value="@complaint.Id">@complaint.Name</option>
+
+                    }
+
+                </select>
+                <span class="invalid-feedback" style="display: none;"></span>
+
+            </div>
+            
+        </div>
+
+        <div class="col-lg-6 mt-2">
+            <div id="fixed-autocomplete-container" class="position-relative">
+                <label for="txtEmployeeName">Complaint Category</label>
+                <input type="file" id="AttachContract" class="inputCustom form-control" multiple>
+                <span class="invalid-feedback" style="display: none;"></span>
+                </div>
+
+        </div>
+            </div>
+ 
+            </section>
+<div class="d-flex flex-row-reverse gap-3 mt-4">
+    <button id="btnSubmit" class="yellow-btn">
+        Submit
+    </button>
+    <button id="btnCancel" class="cancel-btn">Cancel</button>
 </div>
+@* <div class="container"> *@
+@*     <div class="row justify-content-center"> *@
+@*         <div class="col-md-8"> *@
+@*             <div class="card shadow mt-4 mb-4"> *@
+@*                 <div class="card-header bg-primary text-white"> *@
+@*                     <h4 class="mb-0">Submit New Complaint</h4> *@
+@*                 </div> *@
+@*                 <div class="card-body"> *@
+@*                     <form method="post" enctype="multipart/form-data"> *@
+@*                         <div class="mb-4"> *@
+@*                             <label class="form-label fw-bold">Complaint Type</label> *@
+@*                             <select class="form-select" asp-for="@Model.ComplaintTypeId"> *@
+@*                                 <option value="">-- Select Complaint Type --</option> *@
+
+@*                                 @foreach (var complaint in Model.ComplaintTypeList) *@
+@*                                 { *@
+@*                                     <option value="@complaint.Id">@complaint.Name</option> *@
+
+@*                                 } *@
+                            
+@*                             </select> *@
+@*                             <span asp-validation-for="ComplaintTypeId" class="text-danger"></span> *@
+@*                         </div> *@
+
+@*                         <div class="row mb-3"> *@
+@*                             <label class="col-sm-3 col-form-label">Title</label> *@
+@*                             <div class="col-sm-9"> *@
+@*                                 <input class="form-control" asp-for="Title"> *@
+@*                                 <span asp-validation-for="Title" class="text-danger"></span> *@
+@*                             </div> *@
+@*                         </div> *@
+
+@*                         <div class="row mb-3"> *@
+@*                             <label class="col-sm-3 col-form-label">Description</label> *@
+@*                             <div class="col-sm-9"> *@
+@*                                 <textarea class="form-control" asp-for="Description" rows="5"></textarea> *@
+@*                                 <span asp-validation-for="Description" class="text-danger"></span> *@
+@*                             </div> *@
+@*                         </div> *@
+
+
+@*                         <div class="row mb-4"> *@
+@*                             <label class="col-sm-3 col-form-label">Upload Files</label> *@
+@*                             <div class="col-sm-9"> *@
+@*                                 <input type="file" class="form-control" asp-for="Attachments" multiple> *@
+@*                                 <small class="text-muted">You can upload multiple files at once</small> *@
+@*                                 <span asp-validation-for="Attachments" class="text-danger"></span> *@
+@*                             </div> *@
+@*                         </div> *@
+
+@*                         <div class="row"> *@
+@*                             <div class="col-sm-6 d-grid"> *@
+@*                                 <a class="btn btn-outline-secondary" asp-controller="Complaints" asp-action="Index" role="button"> *@
+@*                                     Cancel *@
+@*                                 </a> *@
+@*                             </div> *@
+@*                             <div class="col-sm-6 d-grid"> *@
+@*                                 <button type="submit" class="btn btn-primary">Submit</button> *@
+@*                             </div> *@
+@*                         </div> *@
+@*                     </form> *@
+@*                 </div> *@
+@*             </div> *@
+@*         </div> *@
+@*     </div> *@
+@* </div> *@
 
 @section Scripts {
     @{

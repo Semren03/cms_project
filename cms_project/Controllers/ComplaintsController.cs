@@ -102,7 +102,7 @@ namespace cms_project.Controllers
         {
 
             var userComplaint = context.Set<Complaint>().Include(x => x.UserAccount).Include(x => x.AttachmentComplaints)
-                                                     .Include(x => x.ComplaintType)
+                                                     .Include(x => x.ComplaintType).OrderByDescending(x=>x.CreatedDate)
                   .Select(x => new ComplaintListViewModel
                   {
                       Id = x.Id,

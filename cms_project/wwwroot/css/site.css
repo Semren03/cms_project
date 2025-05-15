@@ -83,3 +83,26 @@ textarea {
     background-image: linear-gradient(135deg, #00abbd, #6dd0de);
     background-size: cover;
 }
+a {
+    color: #00abbd;
+    text-decoration: none;
+    background-color: transparent;
+}
+    a:hover {
+        color: #224abe;
+        text-decoration: underline;
+    }
+.text-primary {
+    color: #00abbd !important;
+}
+
+a.text-primary:hover, a.text-primary:focus {
+    color: #224abe !important;
+}
+.customSearch {
+    position: absolute;
+    top:83px;
+    left: 35px;
+    overflow: hidden;
+    z-index: 9999; /* large enough number */
+}
