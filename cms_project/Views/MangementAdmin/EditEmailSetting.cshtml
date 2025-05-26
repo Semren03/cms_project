@@ -33,9 +33,9 @@
 
         <div class="col-lg-6 mb-4">
             <label asp-for="EnableSsl"></label>
-            <select asp-for="EnableSsl" class="form-control inputCustom">
-                <option value="0" selected="@Model.EnableSsl == true">False</option>
-                <option value="1" selected="@Model.EnableSsl == false">True</option>
+            <select asp-for="EnableSsl" class="form-control inputCustom" value="@Model.EnableSsl==1? 1:0">
+                <option value="false" >False</option>
+                <option value="true" >True</option>
             </select>
             <span asp-validation-for="EnableSsl" class="text-danger"></span>
         </div>

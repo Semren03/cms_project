@@ -2,6 +2,7 @@
 using cms_project.Data;
 using cms_project.Models.Entites;
 using cms_project.Models.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -31,6 +32,7 @@ namespace cms_project.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "Manage Roles")]
         public IActionResult ManageRoles()
         {
             var roles = context.Roles.Include(r => r.Claims).ToList();
@@ -42,6 +44,7 @@ namespace cms_project.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "Manage Roles")]
         public IActionResult Create(Role role, List<int> selectedClaims)
         {
             if (ModelState.IsValid)
@@ -65,6 +68,9 @@ namespace cms_project.Controllers
         }
 
         [HttpGet]
+
+        [Authorize(Policy = "Manage Roles")]
+
         public IActionResult EditRole(int id)
         {
             var role = context.Set<Role>().Include(x=>x.Claims).FirstOrDefault(x => x.Id == id);
@@ -74,6 +80,7 @@ namespace cms_project.Controllers
             return View(role);
         }
         [HttpPost]
+        [Authorize(Policy = "Manage Roles")]
         public IActionResult UpdateRole(Role role, List<int> selectedClaims)
         {
             var roleExist = context.Roles
@@ -208,7 +215,7 @@ namespace cms_project.Controllers
 
             return RedirectToAction("MangementTableComplaintType");
         }
-
+        [Authorize(Policy = "Email Setting")]
         public async Task<IActionResult> EditEmailSetting()
         {
             var settings = await context.EmailSettings.FirstOrDefaultAsync(x=>x.Id ==1);
@@ -218,15 +225,15 @@ namespace cms_project.Controllers
             return View(settings);
         }
 
-       
         [HttpPost]
+        [Authorize(Policy = "Email Setting")]
         public async Task<IActionResult> EditEmailSetting( EmailSettings model)
         {
             if (ModelState.IsValid)
             {
                     context.Update(model);
                     await context.SaveChangesAsync();
-                    return RedirectToAction(nameof(EditEmailSetting), new { id = model.Id });
+                    return RedirectToAction("Index","Dashboard");
             }
 
             return View(model);

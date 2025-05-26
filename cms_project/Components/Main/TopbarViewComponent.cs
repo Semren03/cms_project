@@ -21,16 +21,14 @@ namespace cms_project.Componant.Main
             var username = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "Name")?.Value ?? "Guest";
             var userIdClaim = HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
 
-            List<Notification> notifications = new List<Notification>();
-
-            if (int.TryParse(userIdClaim, out int userId))
-            {
-                notifications = context.Set<Notification>()
+            int.TryParse(userIdClaim, out int userId);
+            
+             var  notifications = context.Set<Notification>()
                     .Where(n => n.UserId == userId)
                     .OrderByDescending(n => n.CreatedDate)
                     .Take(5)
                     .ToList();
-            }
+           
 
             var model = new TopBarViewModel
             {

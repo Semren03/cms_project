@@ -4,6 +4,7 @@ using cms_project.Data;
 using cms_project.Models.Entites;
 using cms_project.Models.ViewModel;
 using cms_project.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -287,7 +288,6 @@ namespace cms_project.Controllers
         }
 
         [HttpPost]
-
         public async Task<IActionResult> AddHistory(Guid complaintId,int actionStatus, string comments )
         {
             var complaint =await context.Set<Complaint>().Include(x=>x.UserAccount).FirstOrDefaultAsync(c => c.Id == complaintId);
@@ -323,7 +323,7 @@ namespace cms_project.Controllers
             context.Set<Notification>().Add(notification);
             await context.SaveChangesAsync();
 
-            return RedirectToAction("ComplaintDetails", new {id  = complaintId});
+            return RedirectToAction("Index","Dashboard");
         }
             
 

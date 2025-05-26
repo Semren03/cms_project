@@ -1,5 +1,6 @@
 using cms_project.Data;
 using cms_project.Services;
+using Hangfire;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,11 +8,16 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
+builder.Services.AddHangfire(configuration =>
+    configuration.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                 .UseSimpleAssemblyNameTypeSerializer()
+                 .UseRecommendedSerializerSettings()
+                 .UseSqlServerStorage(builder.Configuration.GetConnectionString("Default")));
+builder.Services.AddHangfireServer();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 builder.Services.AddScoped<EmailService>();
-
+builder.Services.AddScoped<ComplaintJob>();
 builder.Services.AddAuthentication("CookieAuth")
     .AddCookie("CookieAuth",options =>
     {
@@ -24,6 +30,10 @@ builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("CanViewDashboard", policy =>
     policy.RequireClaim("Permission", "CanViewDashboard"));
+    options.AddPolicy("Email Setting", policy =>
+    policy.RequireClaim("Permission", "Email Setting"));
+    options.AddPolicy("Manage Roles", policy =>
+  policy.RequireClaim("Permission", "Manage Roles"));
 });
 
 
@@ -47,5 +57,13 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Account}/{action=Login}");
+
+app.UseHangfireDashboard("/admin/jobs");
+
+RecurringJob.AddOrUpdate<ComplaintJob>(
+    "close-resolved-complaints-daily",
+    job => job.CloseResolvedComplaints(),
+    Cron.Daily()
+);
 
 app.Run();
