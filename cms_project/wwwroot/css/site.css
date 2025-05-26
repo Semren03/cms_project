@@ -1,16 +1,41 @@
-.inputCustom {
+/* ????? ??????? */
+.inputCustom,
+.assignToSelect {
     font-size: 16px;
     border: 2px solid #d9ebd8;
-    border-radius: 13px !important;
+    border-radius: 13px;
     color: #222222;
-    height: 50px !important;
-    margin-right: 30px;
+    height: 50px;
     padding: 0 16px;
-    width: 100% !important;
+    width: 100%;
+    margin-right: 30px;
     z-index: 2;
 }
 
+.inputCustom {
+    width: 100% !important;
+}
+
+.assignToSelect {
+    min-width: 495px;
+    max-width: 495px;
+}
+
+/* textarea */
+textarea {
+    height: 85px;
+    background-color: white;
+    border: 2px solid #d9ebd8;
+    border-radius: 13px;
+    padding: 10px 16px;
+    font-size: 14px;
+    color: #222222;
+    resize: none;
+}
+
+/* ?????? ??????? */
 .calender-icon {
+    position: absolute; /* ???? ?? ?? ?????? ???? position: relative */
     right: 0;
     width: 50px;
     height: 50px;
@@ -19,37 +44,16 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #ffca3a;
-    background-color: rgb(255, 202, 58);
+    background-color: #ffca3a;
     cursor: pointer;
 }
-textarea {
-    height: 85px;
-    background-color: white;
-    border: 2px solid #d9ebd8 !important;
-    border-radius: 13px;
-    padding: 10px 16px;
-    font-size: 14px;
-    color: #222222;
-    resize: none;
-}
-.assignToSelect {
-    font-size: 16px !important;
-    border: 2px solid #d9ebd8 !important;
-    border-radius: 13px !important;
-    min-width: 100%;
-    color: #222222 !important;
-    height: 50px;
-    margin-right: 30px;
-    padding: 0 16px;
-/*    background-image: url(/sites/APC/EN/Site Assets/Images/arrow-down.svg) !important;*/
-    min-width: 495px;
-    max-width: 495px;
-}
-.yellow-btn, .cancel-btn {
-    padding: 0 30px !important;
+
+/* ??????? */
+.yellow-btn,
+.cancel-btn {
+    padding: 0 30px;
     background-color: #ffca3a;
-    color: #ffffff !important;
+    color: #ffffff;
     border: none;
     text-align: center;
     border-radius: 13px;
@@ -58,51 +62,62 @@ textarea {
     font-size: 16px;
 }
 
+/* ?????? */
 .table-history {
     border-collapse: separate;
-    border: 1px solid #c8c8c8 !important;
     border-spacing: 0;
     width: 100%;
-    border: none;
     border-radius: 13px;
     overflow: hidden;
+    border: 1px solid #c8c8c8;
 }
+
     .table-history th {
-        background-color: #F1D68E !important;
-        color: white !important;
-        font-weight: 700 !important;
+        background-color: #F1D68E;
+        color: white;
+        font-weight: 700;
         font-size: 14px;
-        padding: 12px 15px !important;
-        border: none !important;
+        padding: 12px 15px;
+        border: none;
     }
- td {
-    padding:10px
-}
+
+    .table-history td {
+        padding: 10px;
+    }
+
+/* ??????? */
 .bg-gradient-primary {
     background-color: #00abbd;
     background-image: linear-gradient(135deg, #00abbd, #6dd0de);
     background-size: cover;
 }
+
+/* ??????? */
 a {
     color: #00abbd;
     text-decoration: none;
     background-color: transparent;
 }
+
     a:hover {
         color: #224abe;
         text-decoration: underline;
     }
+
 .text-primary {
     color: #00abbd !important;
 }
 
-a.text-primary:hover, a.text-primary:focus {
+a.text-primary:hover,
+a.text-primary:focus {
     color: #224abe !important;
 }
+
+/* ????? ?????? */
 .customSearch {
     position: absolute;
-    top:83px;
+    top: 83px;
     left: 35px;
     overflow: hidden;
-    z-index: 9999; /* large enough number */
+    z-index: 9999;
 }

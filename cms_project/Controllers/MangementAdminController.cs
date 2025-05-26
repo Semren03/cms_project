@@ -166,6 +166,73 @@ namespace cms_project.Controllers
             return View(UserWITHRoles);
         }
 
+        [HttpGet]
+
+        public IActionResult MangementTableComplaintType()
+        {
+            var UserWITHComplaintType = context.Set<UserAccount>()
+                .Include(x => x.Role)
+                .Include(x => x.ComplaintType)
+                .Where(x => x.Role.Name == "Complaint Handler")
+                .ToList();
+            return View(UserWITHComplaintType);
+        }
+
+        [HttpGet]
+
+        [HttpGet]
+        public IActionResult EditComplaintType(int id)
+        {
+            var user = context.Set<UserAccount>()
+                .Include(x => x.ComplaintType)
+                .Include(x => x.Role)
+                .FirstOrDefault(x => x.Id == id);
+
+            if (user == null)
+                return NotFound();
+
+            ViewBag.ComplaintTypes = context.ComplaintTypes.ToList();     
+            return View(user);
+        }
+
+        [HttpPost]
+        public IActionResult EditComplaintType(int id, int? ComplaintTypeResolverId)
+        {
+            var user = context.Set<UserAccount>().FirstOrDefault(x => x.Id == id);
+
+            if (user == null)
+                return NotFound();
+
+            user.ComplaintTypeResolverId = ComplaintTypeResolverId;
+            context.SaveChanges();
+
+            return RedirectToAction("MangementTableComplaintType");
+        }
+
+        public async Task<IActionResult> EditEmailSetting()
+        {
+            var settings = await context.EmailSettings.FirstOrDefaultAsync(x=>x.Id ==1);
+            if (settings == null)
+                return NotFound();
+
+            return View(settings);
+        }
+
+       
+        [HttpPost]
+        public async Task<IActionResult> EditEmailSetting( EmailSettings model)
+        {
+            if (ModelState.IsValid)
+            {
+                    context.Update(model);
+                    await context.SaveChangesAsync();
+                    return RedirectToAction(nameof(EditEmailSetting), new { id = model.Id });
+            }
+
+            return View(model);
+        }
+
+
 
     }
 }

@@ -1,0 +1,24 @@
+﻿@model cms_project.Models.Entites.UserAccount
+
+@{
+    ViewData["Title"] = "Edit Complaint Type";
+    var complaintTypes = ViewBag.ComplaintTypes as List<cms_project.Models.Entites.ComplaintType>;
+}
+
+<div class="container mt-4">
+    <h2>@ViewData["Title"]</h2>
+
+    <form asp-action="EditComplaintType" method="post">
+        <input type="hidden" asp-for="Id" />
+
+        <div class="mb-3">
+            <label for="ComplaintTypeResolverId" class="form-label">Select Complaint Type</label>
+            <select asp-for="ComplaintTypeResolverId" class="form-select" asp-items="@(new SelectList(complaintTypes, "Id", "Name", Model.ComplaintTypeResolverId))">
+                <option value="">-- Select Complaint Type --</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a asp-action="MangementTableComplaintType" class="btn btn-secondary ms-2">Cancel</a>
+    </form>
+</div>

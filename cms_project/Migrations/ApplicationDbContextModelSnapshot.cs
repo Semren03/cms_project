@@ -175,7 +175,7 @@ namespace cms_project.Migrations
                     b.ToTable("ComplaintTypes");
                 });
 
-            modelBuilder.Entity("cms_project.Models.Entites.Request", b =>
+            modelBuilder.Entity("cms_project.Models.Entites.EmailSettings", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -183,14 +183,57 @@ namespace cms_project.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("StatusId")
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("EnableSsl")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FromEmail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Host")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Port")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EmailSettings");
+                });
+
+            modelBuilder.Entity("cms_project.Models.Entites.Notification", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("StatusId");
+                    b.HasIndex("UserId");
 
-                    b.ToTable("Requests");
+                    b.ToTable("Notification");
                 });
 
             modelBuilder.Entity("cms_project.Models.Entites.Role", b =>
@@ -337,15 +380,15 @@ namespace cms_project.Migrations
                     b.Navigation("Complaint");
                 });
 
-            modelBuilder.Entity("cms_project.Models.Entites.Request", b =>
+            modelBuilder.Entity("cms_project.Models.Entites.Notification", b =>
                 {
-                    b.HasOne("cms_project.Models.Entites.Status", "Status")
-                        .WithMany("Requests")
-                        .HasForeignKey("StatusId")
+                    b.HasOne("cms_project.Models.Entites.UserAccount", "UserAccount")
+                        .WithMany("Notifications")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Status");
+                    b.Navigation("UserAccount");
                 });
 
             modelBuilder.Entity("cms_project.Models.Entites.UserAccount", b =>
@@ -390,8 +433,6 @@ namespace cms_project.Migrations
                     b.Navigation("Complaints");
 
                     b.Navigation("ComplaintsHistory");
-
-                    b.Navigation("Requests");
                 });
 
             modelBuilder.Entity("cms_project.Models.Entites.UserAccount", b =>
@@ -399,6 +440,8 @@ namespace cms_project.Migrations
                     b.Navigation("AssignedUsers");
 
                     b.Navigation("Complaints");
+
+                    b.Navigation("Notifications");
                 });
 #pragma warning restore 612, 618
         }

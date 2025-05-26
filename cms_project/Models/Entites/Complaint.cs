@@ -41,6 +41,7 @@ public class Complaint
     public int? AssignedTo { get; set; }
     public UserAccount AssignedUser { get; set; }
 
+
     public int StatusId { get; set; }
 
     [ForeignKey(nameof(StatusId))]

@@ -1,0 +1,59 @@
+﻿@model cms_project.Models.Entites.EmailSettings
+
+@{
+    ViewData["Title"] = "Edit Email Settings";
+}
+
+<h2>Edit Email Settings</h2>
+
+<form asp-action="EditEmailSetting" method="post">
+    <input asp-for="Id" type="hidden" />
+    <div class="row mb-4">
+        <div class="col-lg-6 mb-4">
+            <label asp-for="Host"></label>
+            <input asp-for="Host" class="form-control inputCustom" />
+            <span asp-validation-for="Host" class="text-danger"></span>
+        </div>
+        <div class="col-lg-6 mb-4">
+            <label asp-for="Port"></label>
+            <input asp-for="Port" type="number" class="form-control inputCustom" />
+            <span asp-validation-for="Port" class="text-danger"></span>
+        </div>
+
+        <div class="col-lg-6 mb-4">
+            <label asp-for="UserName"></label>
+            <input asp-for="UserName" class="form-control inputCustom" />
+            <span asp-validation-for="UserName" class="text-danger"></span>
+        </div>
+        <div class="col-lg-6 mb-4">
+            <label asp-for="Password"></label>
+            <input asp-for="Password" type="text" class="form-control inputCustom" />
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+
+        <div class="col-lg-6 mb-4">
+            <label asp-for="EnableSsl"></label>
+            <select asp-for="EnableSsl" class="form-control inputCustom">
+                <option value="0" selected="@Model.EnableSsl == true">False</option>
+                <option value="1" selected="@Model.EnableSsl == false">True</option>
+            </select>
+            <span asp-validation-for="EnableSsl" class="text-danger"></span>
+        </div>
+        <div class="col-lg-6 mb-4">
+            <label asp-for="FromEmail"></label>
+            <input asp-for="FromEmail" type="email" class="form-control inputCustom" />
+            <span asp-validation-for="FromEmail" class="text-danger"></span>
+        </div>
+
+        <div class="col-lg-6 mb-4">
+            <label asp-for="DisplayName"></label>
+            <input asp-for="DisplayName" class="form-control inputCustom" />
+            <span asp-validation-for="DisplayName" class="text-danger"></span>
+        </div>
+
+        <div class="col-12 d-flex gap-3 mt-4">
+            <button class="btn btn-warning" type="submit">Save</button>
+            <button class="btn btn-secondary" type="button">Back</button>
+        </div>
+    </div>
+</form>

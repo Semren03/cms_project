@@ -1,0 +1,282 @@
+﻿:root {
+    --primary: #00abbd;
+    --primary-dark: #008d9c;
+    --primary-light: #4fc3d0;
+    --accent: #F1D68E;
+    --accent-dark: #e3c36a;
+    --text-dark: #2d3748;
+    --text-light: #718096;
+    --bg-light: #f7fafc;
+    --white: #ffffff;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.08);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,0.1), 0 5px 10px rgba(0,0,0,0.05);
+    --shadow-xl: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: linear-gradient(135deg, #EFF5F5 0%, #E3F4F4 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    color: var(--text-dark);
+    padding: 20px;
+}
+
+.page-container {
+    display: flex;
+    max-width: 900px;
+    width: 100%;
+    height: 600px;
+    background: var(--white);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--shadow-xl);
+}
+
+.brand-side {
+    flex: 1;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+}
+
+    .brand-side::before {
+        content: '';
+        position: absolute;
+        width: 300%;
+        height: 300%;
+        top: -100%;
+        left: -100%;
+        background: radial-gradient(ellipse at center, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
+        transform: rotate(-15deg);
+    }
+
+.circles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 1;
+}
+
+    .circles li {
+        position: absolute;
+        display: block;
+        list-style: none;
+        width: 20px;
+        height: 20px;
+        background: rgba(255, 255, 255, 0.1);
+        animation: animate 25s linear infinite;
+        bottom: -150px;
+        border-radius: 50%;
+    }
+
+        .circles li:nth-child(1) {
+            left: 25%;
+            width: 80px;
+            height: 80px;
+            animation-delay: 0s;
+        }
+
+        .circles li:nth-child(2) {
+            left: 10%;
+            width: 20px;
+            height: 20px;
+            animation-delay: 2s;
+            animation-duration: 12s;
+        }
+
+        .circles li:nth-child(3) {
+            left: 70%;
+            width: 40px;
+            height: 40px;
+            animation-delay: 4s;
+        }
+
+        .circles li:nth-child(4) {
+            left: 40%;
+            width: 60px;
+            height: 60px;
+            animation-delay: 0s;
+            animation-duration: 18s;
+        }
+
+        .circles li:nth-child(5) {
+            left: 65%;
+            width: 20px;
+            height: 20px;
+            animation-delay: 0s;
+        }
+
+@keyframes animate {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+        border-radius: 0;
+    }
+
+    100% {
+        transform: translateY(100px) rotate(360deg);
+        opacity: 0;
+        border-radius: 50%;
+    }
+}
+
+.logo-container {
+    position: relative;
+    width: 180px;
+    height: 180px;
+    margin: 0 auto;
+    z-index: 2;
+    filter: drop-shadow(0px 10px 15px rgba(0, 0, 0, 0.3));
+}
+
+.brand-name {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--white);
+    margin-top: 30px;
+    text-align: center;
+    z-index: 2;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.brand-tagline {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.85);
+    text-align: center;
+    margin-top: 15px;
+    z-index: 2;
+    letter-spacing: 0.5px;
+}
+
+.login-side {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px 50px;
+    background: var(--white);
+}
+
+.login-header {
+    margin-bottom: 40px;
+}
+
+.login-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 10px;
+}
+
+.login-subtitle {
+    font-size: 16px;
+    color: var(--text-light);
+    font-weight: 400;
+}
+
+.form-group {
+    position: relative;
+    margin-bottom: 25px;
+}
+
+.form-control {
+    width: 100%;
+    height: 55px;
+    background: var(--bg-light);
+    border: 2px solid transparent;
+    border-radius: 12px;
+    padding: 0 20px 0 50px;
+    font-size: 15px;
+    color: var(--text-dark);
+    transition: all 0.3s ease;
+    font-family: 'Poppins', sans-serif;
+}
+
+    .form-control:focus {
+        border-color: var(--accent);
+        background: var(--white);
+        box-shadow: 0 0 0 4px rgba(241, 214, 142, 0.15);
+        outline: none;
+    }
+
+.form-icon {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary);
+    font-size: 18px;
+    transition: all 0.3s ease;
+}
+
+.form-group:focus-within .form-icon {
+    color: var(--accent);
+}
+
+.btn-login {
+    width: 100%;
+    height: 55px;
+    background: linear-gradient(to right, var(--primary), var(--primary-dark));
+    border: none;
+    border-radius: 12px;
+    color: var(--white);
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 171, 189, 0.25);
+    font-family: 'Poppins', sans-serif;
+}
+
+    .btn-login:hover {
+        background: linear-gradient(to right, var(--primary-dark), var(--primary));
+        box-shadow: 0 8px 20px rgba(0, 171, 189, 0.35);
+        transform: translateY(-2px);
+    }
+
+@media (max-width: 768px) {
+    .page-container {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .brand-side {
+        padding: 30px 20px;
+    }
+
+    .login-side {
+        padding: 40px 20px;
+    }
+
+    .logo-container {
+        width: 140px;
+        height: 140px;
+    }
+
+    .brand-name {
+        font-size: 24px;
+        margin-top: 20px;
+    }
+}

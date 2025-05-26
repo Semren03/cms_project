@@ -1,4 +1,5 @@
 using cms_project.Data;
+using cms_project.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,7 +10,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
-
+builder.Services.AddScoped<EmailService>();
 
 builder.Services.AddAuthentication("CookieAuth")
     .AddCookie("CookieAuth",options =>

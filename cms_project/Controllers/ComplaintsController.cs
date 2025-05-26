@@ -16,10 +16,12 @@ namespace cms_project.Controllers
     {
         private readonly ApplicationDbContext context;
         private readonly IWebHostEnvironment environment;
-        public ComplaintsController(ApplicationDbContext dbContext , IWebHostEnvironment environment) 
+        private readonly EmailService _emailService;
+        public ComplaintsController(ApplicationDbContext dbContext , IWebHostEnvironment environment,EmailService emailService) 
         { 
         this.context = dbContext;
         this.environment = environment;
+            this._emailService= emailService;   
         }
         [HttpGet]
         public IActionResult Create()
@@ -92,8 +94,17 @@ namespace cms_project.Controllers
 
             context.Set<Complaint>().Add(complaint);
             await context.SaveChangesAsync();
-          var x =  new EmailService();
-            x.Send(userEmail,"Complaint Submited",$"Dear {User.FindFirstValue("Name")}, Thank you for Submited The Complaint" );
+        //  var x =  new EmailService();
+            _emailService.Send(userEmail,"Complaint Submited",$"Dear {User.FindFirstValue("Name")}, Thank you for Submited The Complaint" );
+            var notification = new Notification
+            {
+                Id = Guid.NewGuid().ToString(), 
+                Title = "Complaint Submitted Successfully",
+                UserId = userId,
+                CreatedDate = DateTime.Now
+            };
+            context.Set<Notification>().Add(notification);
+            await context.SaveChangesAsync();
             return RedirectToAction("Create","Complaints");
         }
 
@@ -235,25 +246,49 @@ namespace cms_project.Controllers
 
             var assigne = context.Set<UserAccount>().AsNoTracking().FirstOrDefault(x => x.Id == userId);
             
-            var e = new EmailService();
-            e.Send(complaint.UserAccount.Email, "Your Complaint is in Progress",
+            _emailService.Send(complaint.UserAccount.Email, "Your Complaint is in Progress",
                  string.Format(
               "Dear {0},\n\nYour complaint is currently in progress and has been assigned to {1}. Please wait while we work to resolve it.\n\nThank you for your patience.\n\nBest regards,\nSupport Team",
              complaint.UserAccount.Name ,assigne.Name
               ));
 
-            e.Send(assigne.Email, "New Complaint Assigned to You",
+            var notificationForOwner = new Notification
+            {
+                Id = Guid.NewGuid().ToString(),
+                Title = "Your complaint is in progress",
+                UserId = complaint.UserAccount.Id,
+                CreatedDate = DateTime.Now
+            };
+            context.Set<Notification>().Add(notificationForOwner);
+            context.SaveChanges();
+
+
+
+            _emailService.Send(assigne.Email, "New Complaint Assigned to You",
                  string.Format(
               "Dear {0},\n\nA new complaint titled \"{1}\" has been assigned to you. Please check the complaint details and take the necessary action.\n\nBest regards,\nSupport Team",
                assigne.Name, complaint.Title
+
                   ));
+
+            var notificationForAssignee = new Notification
+            {
+                Id = Guid.NewGuid().ToString(),
+                Title = "New complaint assigned to you",
+                UserId = assigne.Id,
+                CreatedDate = DateTime.Now
+            };
+            context.Set<Notification>().Add(notificationForAssignee);
+            context.SaveChanges();
             return RedirectToAction("ComplaintDetails", new { id = complaintId });
+
+          
 
         }
 
         [HttpPost]
 
-        public async Task<IActionResult> AddHistory(Guid complaintId,int actionStatus, string comments)
+        public async Task<IActionResult> AddHistory(Guid complaintId,int actionStatus, string comments )
         {
             var complaint =await context.Set<Complaint>().Include(x=>x.UserAccount).FirstOrDefaultAsync(c => c.Id == complaintId);
             var resolverName = User.FindFirstValue("Name");
@@ -273,11 +308,20 @@ namespace cms_project.Controllers
             complaint.AssignedTo = null;
             await context.SaveChangesAsync();
 
-            var emailService = new EmailService();
-            emailService.Send(
+            _emailService.Send(
                 complaint.UserAccount.Email,
                 "Complaint Status Updated",
-                $"Your complaint with ID {complaintId} has been updated to: {complaint.StatusId}");
+                $"Your complaint with ID {complaintId} has been updated to: {((ComplaintStatus)actionStatus).ToString()}");
+
+            var notification = new Notification
+            {
+                Id = Guid.NewGuid().ToString(),
+                Title = $"Complaint status updated to {complaint.StatusId}",
+                UserId = complaint.UserAccount.Id,
+                CreatedDate = DateTime.Now
+            };
+            context.Set<Notification>().Add(notification);
+            await context.SaveChangesAsync();
 
             return RedirectToAction("ComplaintDetails", new {id  = complaintId});
         }

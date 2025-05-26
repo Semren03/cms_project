@@ -1,21 +1,26 @@
 ﻿using System.Net;
 using System.Net.Mail;
+using cms_project.Data;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 
 namespace cms_project.Services
 {
-    public class EmailService
+    public class EmailService(ApplicationDbContext context)
     {
       public  void Send(string toEmail,string subject,string body)
         {
+            var emailSetting = context.EmailSettings.FirstOrDefault(x => x.Id == 1);
+            if (emailSetting is null)
+                return;
             // message => subject, body ,to ,from
-            var message = new MailMessage("3220601094@std.wise.edu.jo", "3210601001@std.wise.edu.jo", subject,body);
+            var message = new MailMessage(emailSetting.FromEmail, "3210601001@std.wise.edu.jo", subject,body);
 
-            SmtpClient smtp = new SmtpClient("smtp-mail.outlook.com", 587);
+            SmtpClient smtp = new SmtpClient(emailSetting.Host, emailSetting.Port);
  
-            smtp.Credentials = new NetworkCredential("3220601094@std.wise.edu.jo", "Ahmad123$");
+            smtp.Credentials = new NetworkCredential(emailSetting.UserName, emailSetting.Password);
             smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
-            smtp.EnableSsl = true;
+            smtp.EnableSsl = emailSetting.EnableSsl;
 
             try
             {

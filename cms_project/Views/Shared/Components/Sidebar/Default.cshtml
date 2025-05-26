@@ -1,14 +1,12 @@
 ﻿@model cms_project.Models.ViewModel.SideBarViewModel
 
-
-
 <!-- Sidebar -->
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
         <div class="sidebar-brand-icon rotate-n-15">
-            <i class="fas fa-laugh-wink"></i>
+            <i class="fas fa-brain"></i> <!-- أيقونة عقل مع دوران -->
         </div>
         <div class="sidebar-brand-text mx-3">WISE CMS<sup>ADMIN</sup></div>
     </a>
@@ -19,7 +17,7 @@
     <!-- Nav Item - Dashboard -->
     <li class="nav-item active">
         <a class="nav-link" asp-action="Index" asp-controller="Dashboard">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <i class="fas fa-fw fa-home"></i> <!-- أيقونة منزل للدashboard -->
             <span>Dashboard</span>
         </a>
     </li>
@@ -27,34 +25,25 @@
     <!-- Divider -->
     <hr class="sidebar-divider">
 
-    <!-- Heading -->
-    <div class="sidebar-heading">
-
-    </div>
-
-    <!-- Nav Item - Pages Collapse Menu -->
+    <!-- Nav Items for Students -->
     @if (Model.Role == "Student")
     {
         <li class="nav-item">
-            <a class="nav-link collapsed"  asp-controller="Complaints" asp-action="Create"
-            aria-expanded="true" aria-controls="collapseTwo">
-                <i class="fas fa-fw fa-cog"></i>
+            <a class="nav-link collapsed" asp-controller="Complaints" asp-action="Create"
+               aria-expanded="true" aria-controls="collapseTwo">
+                <i class="fas fa-fw fa-plus-circle"></i> <!-- أيقونة زائد للدلالة على إضافة -->
                 <span>Add Complaint</span>
             </a>
-
-
         </li>
-
-        <!-- Nav Item - Utilities Collapse Menu -->
 
         <li class="nav-item">
             <a class="nav-link collapsed" asp-controller="Complaints" asp-action="ShowHistoryComplaint"
-            aria-expanded="true" aria-controls="collapseUtilities">
-                <i class="fas fa-fw fa-wrench"></i>
+               aria-expanded="true" aria-controls="collapseUtilities">
+                <i class="fas fa-fw fa-history"></i> <!-- أيقونة تاريخ -->
                 <span>Complaint History</span>
             </a>
             <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
-            data-parent="#accordionSidebar">
+                 data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Custom Utilities:</h6>
                     <a class="collapse-item" href="utilities-color.html">Colors</a>
@@ -65,22 +54,18 @@
             </div>
         </li>
     }
+
     <!-- Divider -->
     <hr class="sidebar-divider">
 
-    <!-- Heading -->
-    <div class="sidebar-heading">
-
-    </div>
+    <!-- Nav Items based on Permissions -->
     @if (Model.Permission.Contains("Resolve Complaint"))
     {
         <li class="nav-item">
             <a class="nav-link collapsed" asp-controller="Complaints" asp-action="InboxComplaint"
                aria-expanded="true" aria-controls="collapsePages">
-                <i class="fas fa-fw fa-folder"></i>
-                <span>
-                    Complaint Inbox
-                </span>
+                <i class="fas fa-fw fa-inbox"></i> <!-- أيقونة صندوق الوارد -->
+                <span>Complaint Inbox</span>
             </a>
         </li>
     }
@@ -89,20 +74,19 @@
         <li class="nav-item">
             <a class="nav-link collapsed" asp-controller="Complaints" asp-action="ShowComplaint"
                aria-expanded="true" aria-controls="collapsePages">
-                <i class="fas fa-fw fa-folder"></i>
+                <i class="fas fa-fw fa-list-alt"></i> <!-- أيقونة قائمة -->
                 <span>Complaint List</span>
             </a>
         </li>
     }
-    <!-- Nav Item - Pages Collapse Menu -->
+
+    <!-- Admin Role Items -->
     @if (Model.Role == "SuperAdmin")
     {
-       
-
         <li class="nav-item">
             <a class="nav-link collapsed" asp-controller="MangementAdmin" asp-action="ManageRoles"
                aria-expanded="true" aria-controls="collapsePages">
-                <i class="fas fa-fw fa-folder"></i>
+                <i class="fas fa-fw fa-user-shield"></i> 
                 <span>Management Role</span>
             </a>
         </li>
@@ -110,51 +94,28 @@
         <li class="nav-item">
             <a class="nav-link collapsed" asp-controller="MangementAdmin" asp-action="MangementTableUser"
                aria-expanded="true" aria-controls="collapsePages">
-                <i class="fas fa-fw fa-folder"></i>
+                <i class="fas fa-fw fa-users-cog"></i> 
                 <span>Management User</span>
             </a>
         </li>
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" asp-controller="MangementAdmin" asp-action="MangementTableComplaintType"
+               aria-expanded="true" aria-controls="collapsePages">
+                <i class="fas fa-fw fa-tags"></i> 
+                <span>Complaint Type</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link collapsed" asp-controller="MangementAdmin" asp-action="EditEmailSetting" asp-route-id="1"
+               aria-expanded="true" aria-controls="collapsePages">
+                <i class="fas fa-fw fa-envelope"></i>
+                <span>Email Settings</span>
+            </a>
+        </li>
+
+
     }
-    @*
-        <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">Login Screens:</h6>
-                <a class="collapse-item" href="login.html">Login</a>
-                <a class="collapse-item" href="register.html">Register</a>
-                <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
-                <div class="collapse-divider"></div>
-                <h6 class="collapse-header">Other Pages:</h6>
-                <a class="collapse-item" href="404.html">404 Page</a>
-                <a class="collapse-item" href="blank.html">Blank Page</a>
-            </div>
-        </div>
-    </li>
-
-    <!-- Nav Item - Charts -->
-    <li class="nav-item">
-        <a class="nav-link" href="charts.html">
-            <i class="fas fa-fw fa-chart-area"></i>
-            <span>Charts</span>
-        </a>
-    </li>
-
-    <!-- Nav Item - Tables -->  
-    <li class="nav-item">
-        <a class="nav-link" href="tables.html">
-            <i class="fas fa-fw fa-table"></i>
-            <span>Tables</span>
-        </a>
-    </li>
-    
-    <!-- Divider -->
-    <hr class="sidebar-divider d-none d-md-block">
-        
-    <!-- Sidebar Toggler (Sidebar) -->
-    <div class="text-center d-none d-md-inline">
-        <button class="rounded-circle border-0" id="sidebarToggle"></button>
-    </div>
-    *@
-
 
 </ul>
 <!-- End of Sidebar -->

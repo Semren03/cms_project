@@ -15,13 +15,14 @@ namespace cms_project.Models.Entites
         public int RoleId { get; set; }
         public Role Role { get; set; }
 
+        [ForeignKey("ComplaintTypeResolverId")]
         public ComplaintType ComplaintType { get; set; }
-        public int? ComplaintTypeResolverId {  get; set; }
+        public int? ComplaintTypeResolverId { get; set; }
 
 
 
         public ICollection<Complaint> Complaints { get; set; } = new List<Complaint>();
-
+        public ICollection<Notification> Notifications { get; set; } = new List<Notification>();
         public ICollection<Complaint>? AssignedUsers { get; set; }
 
 
