@@ -13,6 +13,9 @@ namespace cms_project.Data
 
         public DbSet<AttachmentComplaint> AttachmentComplaints { get; set; }
 
+        public DbSet<Announcement> Announcements { get; set; }
+
+
         public DbSet<EmailSettings> EmailSettings { get; set; }
 
         public DbSet<Role> Roles { get; set; } 

@@ -1,4 +1,4 @@
-using cms_project.Data;
+    using cms_project.Data;
 using cms_project.Services;
 using Hangfire;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -23,7 +23,7 @@ builder.Services.AddAuthentication("CookieAuth")
     {
         options.LoginPath = "/Account/Login";
         options.LogoutPath = "/Account/Logout";
-        options.AccessDeniedPath = "/home/index";
+        options.AccessDeniedPath = "/home/notfound";
         options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
     });
 builder.Services.AddAuthorization(options =>
@@ -33,7 +33,18 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("Email Setting", policy =>
     policy.RequireClaim("Permission", "Email Setting"));
     options.AddPolicy("Manage Roles", policy =>
+     policy.RequireClaim("Permission", "Manage Complaints"));
+    options.AddPolicy("Manage Complaints", policy =>
   policy.RequireClaim("Permission", "Manage Roles"));
+    options.AddPolicy("Resolve Complaint", policy =>
+policy.RequireClaim("Permission", "Resolve Complaint"));
+    options.AddPolicy("Announcement", policy =>
+policy.RequireClaim("Permission", "Announcement"));
+
+    options.AddPolicy("Manage Complaint Types", policy =>
+policy.RequireClaim("Permission", "Manage Complaint Types"));
+    options.AddPolicy("Manage User", policy =>
+policy.RequireClaim("Permission", "Manage User"));
 });
 
 
@@ -56,7 +67,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Account}/{action=Login}");
+    pattern: "{controller=Home}/{action=Index}");
 
 app.UseHangfireDashboard("/admin/jobs");
 

@@ -24,7 +24,9 @@ namespace cms_project.Controllers
         this.environment = environment;
             this._emailService= emailService;   
         }
+
         [HttpGet]
+        [Authorize]
         public IActionResult Create()
         {
 
@@ -36,6 +38,7 @@ namespace cms_project.Controllers
             return View(new ComplaintViewModel() { ComplaintTypeList=complaintTypes});
         }
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Create(ComplaintViewModel cvm)
         {
 
@@ -110,6 +113,8 @@ namespace cms_project.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "Manage Complaints")]
+
         public IActionResult ShowComplaint()
         {
 
@@ -135,6 +140,7 @@ namespace cms_project.Controllers
             return View(userComplaint);
         }
         [HttpGet]
+        [Authorize]
         public IActionResult ShowHistoryComplaint()
         {
             var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -165,7 +171,7 @@ namespace cms_project.Controllers
 
             return View(userComplaint);
         }
-
+        [Authorize]
         public async Task<IActionResult> ComplaintDetails(Guid id)
         {
 
@@ -200,6 +206,8 @@ namespace cms_project.Controllers
 
             return View(complaint);
         }
+
+        [Authorize(Policy = "Resolve Complaint")]
 
         public async Task<IActionResult> InboxComplaint()
         {
@@ -236,6 +244,7 @@ namespace cms_project.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "Assigne To")]
         public IActionResult AssignTo(Guid complaintId, int userId)
         {
             var complaint = context.Set<Complaint>().Include(x=>x.UserAccount).FirstOrDefault(x => x.Id.Equals(complaintId));
@@ -288,6 +297,7 @@ namespace cms_project.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> AddHistory(Guid complaintId,int actionStatus, string comments )
         {
             var complaint =await context.Set<Complaint>().Include(x=>x.UserAccount).FirstOrDefaultAsync(c => c.Id == complaintId);
@@ -326,12 +336,5 @@ namespace cms_project.Controllers
             return RedirectToAction("Index","Dashboard");
         }
             
-
-        
-
-        
-        
-
-
     }
 }

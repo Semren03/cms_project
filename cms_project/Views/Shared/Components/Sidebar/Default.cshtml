@@ -81,7 +81,7 @@
     }
 
     <!-- Admin Role Items -->
-    @if (Model.Role == "SuperAdmin")
+    @if (Model.Permission.Contains("Manage Roles"))
     {
         <li class="nav-item">
             <a class="nav-link collapsed" asp-controller="MangementAdmin" asp-action="ManageRoles"
@@ -91,21 +91,42 @@
             </a>
         </li>
 
+    }
+    @if (Model.Permission.Contains("Manage User"))
+    {
         <li class="nav-item">
             <a class="nav-link collapsed" asp-controller="MangementAdmin" asp-action="MangementTableUser"
                aria-expanded="true" aria-controls="collapsePages">
-                <i class="fas fa-fw fa-users-cog"></i> 
+                <i class="fas fa-fw fa-users-cog"></i>
                 <span>Management User</span>
             </a>
         </li>
 
+    }
+    @if (Model.Permission.Contains("Manage Complaint Types"))
+    {
         <li class="nav-item">
             <a class="nav-link collapsed" asp-controller="MangementAdmin" asp-action="MangementTableComplaintType"
                aria-expanded="true" aria-controls="collapsePages">
-                <i class="fas fa-fw fa-tags"></i> 
+                <i class="fas fa-fw fa-tags"></i>
                 <span>Complaint Type</span>
             </a>
         </li>
+
+    }
+    @if (Model.Permission.Contains("Announcement"))
+    {
+        <li class="nav-item">
+            <a class="nav-link collapsed" asp-controller="Dashboard" asp-action="CreateAnnouncement"
+               aria-expanded="true" aria-controls="collapsePages">
+                <i class="fas fa-fw fa-bell"></i>
+                <span>Announcements</span>
+            </a>
+        </li>
+    }
+    @if (Model.Permission.Contains("Email Setting"))
+    {
+
         <li class="nav-item">
             <a class="nav-link collapsed" asp-controller="MangementAdmin" asp-action="EditEmailSetting" asp-route-id="1"
                aria-expanded="true" aria-controls="collapsePages">
@@ -113,7 +134,6 @@
                 <span>Email Settings</span>
             </a>
         </li>
-
 
     }
 

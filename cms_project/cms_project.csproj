@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Views\Announcement\" />
     <Folder Include="wwwroot\Attachment\" />
   </ItemGroup>
 

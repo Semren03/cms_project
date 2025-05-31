@@ -36,53 +36,66 @@ namespace cms_project.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult Login(LoginViewModel model)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var user = dbContext.Set<UserAccount>().Include(x=>x.Role)
-                                                 .ThenInclude(x=>x.Claims)
-                                                 .Where(x => x.Email == model.Email  && x.Password == model.Password)
-                                                 .AsNoTracking()
-                                                 .FirstOrDefault();
-                if (user != null)
+                try
                 {
-                    var claims = new List<Claim>
-                    {
-                        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                        new Claim ("Name",user.Name),
-                        new Claim("Role", user.Role.Name),
-                        new Claim(ClaimTypes.Email,user.Email),
-                    };
-                    foreach(var claim in user.Role.Claims)
-                    {
-                        claims.Add(new Claim ("Permission", claim.Name));
-                    }
-                    var claimsIdentity = new ClaimsIdentity (claims, "CookieAuth");
-                    HttpContext.SignInAsync("CookieAuth", new ClaimsPrincipal(claimsIdentity));
+                    
 
-                    return RedirectToAction("Index","Dashboard");
-                }
-                else
+                    var user = await dbContext.Set<UserAccount>()
+                                             .Include(x => x.Role)
+                                             .ThenInclude(x => x.Claims)
+                                             .Where(x => x.Email == model.Email && x.Password == model.Password)
+                                             .AsNoTracking()
+                                             .FirstOrDefaultAsync();
+
+                    if (user != null)
+                    {
+                        var claims = new List<Claim>
                 {
-                    ModelState.AddModelError("", "StudentID or Password is not Correct");
-                }
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                    new Claim("Name", user.Name),
+                    new Claim("Role", user.Role.Name),
+                    new Claim(ClaimTypes.Email, user.Email),
+                };
+
+                      
+                        foreach (var claim in user.Role.Claims)
+                        {
+                            claims.Add(new Claim("Permission", claim.Name));
+                        }
+
+                        var claimsIdentity = new ClaimsIdentity(claims, "CookieAuth");
+                        await HttpContext.SignInAsync("CookieAuth", new ClaimsPrincipal(claimsIdentity));
+
+                        return RedirectToAction("Index", "Dashboard");
+                    }
+                    else
+                    {
                        
+                        ModelState.AddModelError("", "Invalid email or password. Please try again.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    
+
+                    ModelState.AddModelError("", "An error occurred during login. Please try again.");
+                }
             }
-                return View();
+
+            return View(model);
         }
+        [Authorize]    
         [HttpPost]
             public IActionResult Logout()
             {
                 HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
                 return RedirectToAction("Login");
             }
-        [Authorize(Policy ="CanViewDashboard")]
-        public IActionResult SecurePage()
-        {
-            ViewBag.Name = HttpContext.User.Claims.FirstOrDefault(x=>x.Type =="Name").Value; 
-            return View();
-        }
 
  
     }

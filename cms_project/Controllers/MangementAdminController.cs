@@ -124,6 +124,8 @@ namespace cms_project.Controllers
 
 
         [HttpGet]
+        [Authorize(Policy = "Manage User")]
+
         public IActionResult AddUser()
         {
             var roles = context.Set<Role>().Include(x=>x.Claims).AsNoTracking().ToList();
@@ -132,6 +134,8 @@ namespace cms_project.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "Manage User")]
+
         public IActionResult AddUser(AddUserRoleViewModel model)
         {
             var user = context.Set<UserAccount>()
@@ -149,6 +153,8 @@ namespace cms_project.Controllers
             return Redirect("MangementTableUser");
         }
         [HttpGet]
+        [Authorize(Policy = "Manage User")]
+
         public IActionResult GetUserData(string Email)
         {
             var user = context.Set<UserAccount>()
@@ -167,6 +173,8 @@ namespace cms_project.Controllers
 
 
         [HttpGet]
+        [Authorize(Policy = "Manage User")]
+
         public IActionResult MangementTableUser()
         {
             var UserWITHRoles = context.Set<UserAccount>().Include(x => x.Role).ToList();

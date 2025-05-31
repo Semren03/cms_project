@@ -14,7 +14,7 @@ namespace cms_project.Services
             if (emailSetting is null)
                 return;
             // message => subject, body ,to ,from
-            var message = new MailMessage(emailSetting.FromEmail, "3210601001@std.wise.edu.jo", subject,body);
+            var message = new MailMessage(emailSetting.FromEmail, toEmail, subject,body);
 
             SmtpClient smtp = new SmtpClient(emailSetting.Host, emailSetting.Port);
  

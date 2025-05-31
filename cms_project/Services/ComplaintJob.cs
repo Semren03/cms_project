@@ -1,5 +1,4 @@
 ﻿using cms_project.Data;
-using cms_project.Migrations;
 using cms_project.Models.Entites;
 using Microsoft.EntityFrameworkCore;
 
