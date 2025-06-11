@@ -30,8 +30,7 @@ namespace cms_project.Migrations
 
                     b.Property<string>("AttachmentName")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("ComplaintId")
                         .HasColumnType("uniqueidentifier");
@@ -100,6 +99,33 @@ namespace cms_project.Migrations
                     b.HasIndex("StatusId");
 
                     b.ToTable("Complaint");
+                });
+
+            modelBuilder.Entity("cms_project.Models.Entites.Announcement", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DatePosted")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Announcements");
                 });
 
             modelBuilder.Entity("cms_project.Models.Entites.Claims", b =>

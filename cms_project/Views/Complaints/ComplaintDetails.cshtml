@@ -83,26 +83,29 @@
             <div class="col-lg-10 " style="margin-top:20px">
 
                 <div class="d-flex align-items-end gap-2">
-                    <form asp-action="AssignTo" method="post">
-                        <!-- Hidden field for complaintId -->
-                        <input type="hidden" name="complaintId" value="@Model.Id" />
+                    
+                    
+                        <form asp-action="AssignTo" method="post">
+                            <!-- Hidden field for complaintId -->
+                            <input type="hidden" name="complaintId" value="@Model.Id" />
 
-                        <!-- Dropdown for userId -->
-                        <label class="mb-3" for="ddlWfType">Assign To</label>
-                        <div class="d-flex align-items-end gap-2">
-                            <select asp-items="ViewBag.Users" name="userId" id="ddlWfType" class="form-select"
-                            style="max-width: 300px; height:49px">
-                                <option value="" selected disabled>Select Assignee</option>
-                            </select>
+                            <!-- Dropdown for userId -->
+                            <label class="mb-3" for="ddlWfType">Assign To</label>
+                            <div class="d-flex align-items-end gap-2">
+                                <select asp-items="ViewBag.Users" name="userId" id="ddlWfType" class="form-select"
+                                style="max-width: 300px; height:49px" required>
+                                    <option value="" selected disabled>Select Assignee</option>
+                                </select>
 
-                            <!-- Submit button -->
-                            <input class="yellow-btn" type="submit" id="btnGo" value="Apply" />
-                        </div>
-                    </form>
+                                <!-- Submit button -->
+                                <input class="yellow-btn" type="submit" id="btnGo" value="Apply" />
+                            </div>
+                        </form>
+                    
                 </div>
             </div>
         }
-      
+
         <div class="row">
             <div class="col-lg-12 mt-5">
                 <h2 class="sub-header">History</h2>
@@ -133,9 +136,9 @@
 
         </div>
 
-        @if ((!isNotAssigned && isAssigner && Model.StatusId == 3) || (isInisiator && (Model.StatusId == 6 ||Model.StatusId ==4) ))
+        @if ((!isNotAssigned && isAssigner && Model.StatusId == 3) || (isInisiator && (Model.StatusId == 6 || Model.StatusId == 4)))
         {
-            <form method="post" action="@Url.Action("AddHistory", "Complaints")">
+            <form method="post" action="@Url.Action("AddHistory", "Complaints")" id="approvalForm">
                 <div id="ApprovalModeDiv" style="margin-top:20px" class="row gy-3 gy-lg-4">
                     <div class="col-lg-5">
                         <div>
@@ -152,27 +155,28 @@
                                     <option value="4">Resolve</option>
                                     <option value="6">Reject</option>
                                 }
-                                
-                        </select>
-                        <span id="rfvAction" class="invalid-feedback" style="display: none;"></span>
+                            </select>
+                            <span id="rfvAction" class="invalid-feedback" style="display: none; color: red;"></span>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <div>
+                            <label for="txtCommentsApporval">Comments</label>
+                            <textarea name="comments" id="txtCommentsApporval" class="w-100" maxlength="1000"></textarea>
+                            <span id="rfvComments" class="invalid-feedback" style="display: none; color: red;"></span>
+                        </div>
                     </div>
                 </div>
-                <div class="col-lg-12">
-                    <div>
-                        <label for="txtCommentsApporval">Comments</label>
-                        <textarea name="comments" id="txtCommentsApporval" class="w-100" maxlength="1000"></textarea>
-                        <span id="rfvComments" class="invalid-feedback" style="display: none;"></span>
-                    </div>
+                <div id="approval-form" class="d-flex gap-3 mt-40">
+                    <input type="hidden" name="complaintId" value="@Model.Id" />
+                    <button type="submit" id="btnSubmit" class="yellow-btn">Submit</button>
                 </div>
-            </div>
-            <div id="approval-form" class="d-flex gap-3 mt-40">
-                <input type="hidden" name="complaintId" value="@Model.Id" />
-                <button type="submit" id="btnSubmit" class="yellow-btn">Submit</button>
-            </div>
-        </form>
-        }
-        
+            </form>
 
-        
+        }
+
+
+       
+
 
 </section>

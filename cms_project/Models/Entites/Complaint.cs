@@ -16,11 +16,9 @@ public class Complaint
     [ForeignKey(nameof(ComplaintTypeId))]
     public ComplaintType ComplaintType { get; set; }
 
-    [Required(ErrorMessage = "Title is required")]
-    [StringLength(100, ErrorMessage = "Title must not exceed 100 characters")]
     public string Title { get; set; }
 
-    [Required(ErrorMessage = "Description is required")]
+
     public string Description { get; set; }
 
    
@@ -28,8 +26,7 @@ public class Complaint
 
     
 
-    [Required(ErrorMessage = "Student name is required")]
-    [StringLength(100, ErrorMessage = "Student name must not exceed 100 characters")]
+
 
     
     public int CreatedBy { get; set; }

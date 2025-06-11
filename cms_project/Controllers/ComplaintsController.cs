@@ -37,21 +37,24 @@ namespace cms_project.Controllers
             }).ToList();
             return View(new ComplaintViewModel() { ComplaintTypeList=complaintTypes});
         }
+    
+
+
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> Create(ComplaintViewModel cvm)
         {
-
-
-            if (!ModelState.IsValid) 
+            if (!ModelState.IsValid)
             {
                 var complaintTypes = context.ComplaintTypes.Select(x => new ComplaintTypesViewModel
                 {
                     Id = x.Id,
                     Name = x.Name,
                 }).ToList();
-                return View(cvm.ComplaintTypeList=complaintTypes);
+                cvm.ComplaintTypeList = complaintTypes;
+                return View(cvm);
             }
+
             var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (!int.TryParse(userIdClaim, out int userId))
             {
@@ -60,57 +63,66 @@ namespace cms_project.Controllers
 
             var userEmail = User.FindFirstValue(ClaimTypes.Email);
 
-
             Complaint complaint = new Complaint()
-                {
-                ComplaintTypeId = cvm.ComplaintTypeId,
-                    Title = cvm.Title,
-                    Description = cvm.Description,
-                    CreatedBy = userId  ,
-                    StatusId = 1
-                    
-            };
-            
-            if (cvm.Attachments.Count > 0)
             {
+                ComplaintTypeId = cvm.ComplaintTypeId,
+                Title = cvm.Title,
+                Description = cvm.Description,
+                CreatedBy = userId,
+                StatusId = 1,
+                AttachmentComplaints = new List<AttachmentComplaint>()  // ensure it's not null
+            };
+
+            if (cvm.Attachments != null && cvm.Attachments.Count > 0)
+            {
+                var uploadFolder = Path.Combine("wwwroot", "attachment");
+                if (!Directory.Exists(uploadFolder))
+                {
+                    Directory.CreateDirectory(uploadFolder);
+                }
+
                 foreach (var file in cvm.Attachments)
                 {
                     if (file.Length > 0)
                     {
-                        var uploadFolder = Path.Combine("wwwroot", "attachment");
-                        if (!Directory.Exists(uploadFolder))
-                        {
-                            Directory.CreateDirectory(uploadFolder);
-                        }
-                        var fileName = Path.GetFileName(file.FileName); 
-                        complaint.AttachmentComplaints.Add(new AttachmentComplaint { AttachmentName =fileName});
-
-
+                        var fileName = Path.GetFileName(file.FileName);
                         var fullPath = Path.Combine(uploadFolder, fileName);
+
                         using (var stream = new FileStream(fullPath, FileMode.Create))
                         {
                             await file.CopyToAsync(stream);
                         }
-                        }
+
+                        complaint.AttachmentComplaints.Add(new AttachmentComplaint
+                        {
+                            AttachmentName = fileName
+                        });
+                    }
                 }
             }
-            
 
+            // Only add & save once
             context.Set<Complaint>().Add(complaint);
             await context.SaveChangesAsync();
-        //  var x =  new EmailService();
-            _emailService.Send(userEmail,"Complaint Submited",$"Dear {User.FindFirstValue("Name")}, Thank you for Submited The Complaint" );
+
+            TempData["SuccessMessage"] = "Your complaint has been successfully submitted.";
+
+            _emailService.Send(userEmail, "Complaint Submitted",
+                $"Dear {User.FindFirstValue("Name")}, Thank you for submitting the complaint.");
+
             var notification = new Notification
             {
-                Id = Guid.NewGuid().ToString(), 
+                Id = Guid.NewGuid().ToString(),
                 Title = "Complaint Submitted Successfully",
                 UserId = userId,
                 CreatedDate = DateTime.Now
             };
             context.Set<Notification>().Add(notification);
             await context.SaveChangesAsync();
-            return RedirectToAction("Create","Complaints");
+
+            return RedirectToAction("Create");
         }
+
 
         [HttpGet]
         [Authorize(Policy = "Manage Complaints")]
@@ -173,7 +185,7 @@ namespace cms_project.Controllers
         }
         [Authorize]
         public async Task<IActionResult> ComplaintDetails(Guid id)
-        {
+            {
 
 
             var complaint = await context.Set<Complaint>()
@@ -243,10 +255,64 @@ namespace cms_project.Controllers
             return View(userComplaint);
         }
 
+        [Authorize(Policy = "Resolve Complaint")]
+
+        public async Task<IActionResult> HistoryResolverComplaint()
+        {
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!int.TryParse(userIdClaim, out int userId))
+            {
+                return BadRequest("Cannot Get User Information");
+            }
+            var username = context.Set<UserAccount>().Where(x => x.Id == userId).Select(x => x.Name).FirstOrDefault();
+            var userComplaint = context.Set<Complaint>()
+                .Include(x=>x.ComplaintHistories)
+                .Where(x => x.ComplaintHistories.Any(x=>x.ResolverName==username) )
+
+                .Include(x => x.UserAccount)
+                .Include(x => x.AttachmentComplaints)
+                .Include(x => x.ComplaintType)
+                  .Select(x => new ComplaintListViewModel
+                  {
+                      Id = x.Id,
+                      ComplaintType = x.ComplaintType.Name,
+                      ComplaintTypeId = x.ComplaintType.Id,
+                      CreatedDate = x.CreatedDate,
+                      Description = x.Description,
+                      Title = x.Title,
+                      Username = x.UserAccount.Name,
+                      Status = x.Status.StatusName,
+                      Attachment = x.AttachmentComplaints.Select(a => a.AttachmentName).ToList(),
+                      ComplaintHistories = x.ComplaintHistories,
+                      AssignToId = x.AssignedTo ?? 0,
+                      StatusId = x.StatusId,
+                      CreatedBy = x.CreatedBy
+                  })
+                .ToList();
+
+            return View("InboxComplaint", userComplaint);
+        }
+
         [HttpPost]
-        [Authorize(Policy = "Assigne To")]
+        [Authorize]
         public IActionResult AssignTo(Guid complaintId, int userId)
         {
+
+
+            var complaint4 = context.Set<Complaint>().Include(x => x.UserAccount).FirstOrDefault(x => x.Id == complaintId);
+            if (complaint4 == null)
+            {
+                TempData["ErrorMessage"] = "Complaint not found.";
+                return RedirectToAction("ComplaintList");
+            }
+
+            var assigne = context.Set<UserAccount>().AsNoTracking().FirstOrDefault(x => x.Id == userId);
+            if (assigne == null)
+            {
+                TempData["ErrorMessage"] = "User to assign not found.";
+                return RedirectToAction("ComplaintDetails", new { id = complaintId });
+            }
+
             var complaint = context.Set<Complaint>().Include(x=>x.UserAccount).FirstOrDefault(x => x.Id.Equals(complaintId));
 
             complaint.AssignedTo = userId;
@@ -254,7 +320,7 @@ namespace cms_project.Controllers
             context.Update(complaint);
             context.SaveChanges();
 
-            var assigne = context.Set<UserAccount>().AsNoTracking().FirstOrDefault(x => x.Id == userId);
+            var assigne6 = context.Set<UserAccount>().AsNoTracking().FirstOrDefault(x => x.Id == userId);
             
             _emailService.Send(complaint.UserAccount.Email, "Your Complaint is in Progress",
                  string.Format(
@@ -288,11 +354,15 @@ namespace cms_project.Controllers
                 UserId = assigne.Id,
                 CreatedDate = DateTime.Now
             };
+
+           
             context.Set<Notification>().Add(notificationForAssignee);
             context.SaveChanges();
+            TempData["AssignSuccessMessage"] = "The complaint has been successfully assigned.";
             return RedirectToAction("ComplaintDetails", new { id = complaintId });
+            // return RedirectToAction("ComplaintDetails", new { id = complaintId });
 
-          
+
 
         }
 

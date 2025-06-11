@@ -17,6 +17,7 @@ namespace cms_project.Models.ViewModel
         public string? AssigneeName { get; set; }
         public int CreatedBy { get; set; }
         public List<string> Attachment { get; set; }
+
         public List<ComplaintHistory> ComplaintHistories { get; set; } = new List<ComplaintHistory>();
 
     }

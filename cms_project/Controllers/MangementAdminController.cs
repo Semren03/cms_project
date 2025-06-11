@@ -90,7 +90,6 @@ namespace cms_project.Controllers
             if (roleExist == null)
                 return NotFound();
 
-            // Update scalar properties
             roleExist.Name = role.Name;
 
             var claimsToAdd = context.Claims
@@ -99,7 +98,7 @@ namespace cms_project.Controllers
 
             var existingClaimIds = roleExist.Claims.Select(c => c.Id).ToList();
 
-            // Add new claims
+     
             foreach (var claim in claimsToAdd)
             {
                 if (!existingClaimIds.Contains(claim.Id))
@@ -108,7 +107,7 @@ namespace cms_project.Controllers
                 }
             }
 
-            // Optional: remove unchecked claims
+      
             var claimsToRemove = roleExist.Claims
                 .Where(c => !selectedClaims.Contains(c.Id))
                 .ToList();
@@ -182,47 +181,35 @@ namespace cms_project.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "Manage Complaint Types")]
 
         public IActionResult MangementTableComplaintType()
         {
-            var UserWITHComplaintType = context.Set<UserAccount>()
-                .Include(x => x.Role)
-                .Include(x => x.ComplaintType)
-                .Where(x => x.Role.Name == "Complaint Handler")
-                .ToList();
-            return View(UserWITHComplaintType);
+            var types = context.ComplaintTypes.ToList();
+            return View(types);
         }
 
+        
         [HttpGet]
-
-        [HttpGet]
-        public IActionResult EditComplaintType(int id)
+        [Authorize(Policy = "Manage Complaint Types")]
+        public IActionResult AddComplaintType()
         {
-            var user = context.Set<UserAccount>()
-                .Include(x => x.ComplaintType)
-                .Include(x => x.Role)
-                .FirstOrDefault(x => x.Id == id);
-
-            if (user == null)
-                return NotFound();
-
-            ViewBag.ComplaintTypes = context.ComplaintTypes.ToList();     
-            return View(user);
+            return View();
         }
 
         [HttpPost]
-        public IActionResult EditComplaintType(int id, int? ComplaintTypeResolverId)
+        [Authorize(Policy = "Manage Complaint Types")]
+        public IActionResult AddComplaintType(ComplaintType model)
         {
-            var user = context.Set<UserAccount>().FirstOrDefault(x => x.Id == id);
-
-            if (user == null)
-                return NotFound();
-
-            user.ComplaintTypeResolverId = ComplaintTypeResolverId;
-            context.SaveChanges();
-
-            return RedirectToAction("MangementTableComplaintType");
+            if (ModelState.IsValid)
+            {
+                context.ComplaintTypes.Add(model);
+                context.SaveChanges();
+                return RedirectToAction("MangementTableComplaintType");
+            }
+            return View(model);
         }
+
         [Authorize(Policy = "Email Setting")]
         public async Task<IActionResult> EditEmailSetting()
         {

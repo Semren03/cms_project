@@ -4,28 +4,24 @@
     Layout = null;
     ViewData["Title"] = "Login";
 }
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
-
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <!-- Semantic UI CSS (icons) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.7/semantic.min.css"
-          crossorigin="anonymous" />
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-
-    <!-- Your custom CSS -->
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="~/css/Loginp.css" />
 </head>
 <body>
     <div class="page-container">
+        <!-- Brand Side -->
         <div class="brand-side">
             <ul class="circles">
                 <li></li>
@@ -34,18 +30,18 @@
                 <li></li>
                 <li></li>
             </ul>
-
             <h1 class="brand-name">WISE COMPLAINT HUB</h1>
             <p class="brand-tagline">Your Voice Matters, Your Complaints Count</p>
         </div>
 
+        <!-- Login Form Side -->
         <div class="login-side">
             <div class="login-header">
                 <h2 class="login-title">Welcome Back</h2>
                 <p class="login-subtitle">Please log in to access your account</p>
             </div>
 
-            <form asp-action="Login" method="post" novalidate>
+            <form id="loginForm" asp-action="Login" method="post" novalidate>
                 @Html.AntiForgeryToken()
 
                 @if (!ViewData.ModelState.IsValid)
@@ -60,25 +56,35 @@
 
                 <div class="form-group position-relative">
                     <i class="form-icon fa-solid fa-envelope"></i>
-                    <input asp-for="Email" class="form-control" placeholder="Email Address" autofocus />
-                    <span asp-validation-for="Email" class="text-danger"></span>
+                    <input asp-for="Email"
+                           class="form-control"
+                           placeholder="Email Address"
+                           type="email"
+                           autocomplete="email"
+                           autofocus />
+                    <span asp-validation-for="Email" class="text-danger validation-message"></span>
                 </div>
 
                 <div class="form-group position-relative">
                     <i class="form-icon fa-solid fa-lock"></i>
-                    <input asp-for="Password" type="password" class="form-control" placeholder="Password" />
-                    <span asp-validation-for="Password" class="text-danger"></span>
+                    <input asp-for="Password"
+                           type="password"
+                           class="form-control"
+                           placeholder="Password"
+                           autocomplete="current-password" />
+                    <span asp-validation-for="Password" class="text-danger validation-message"></span>
                 </div>
 
-                <button type="submit" class="btn-login">LOG IN</button>
+                <button type="submit" class="btn-login" id="loginButton">
+                    LOG IN
+                </button>
             </form>
-
         </div>
     </div>
 
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Your custom JS validation -->
+    <!-- Custom JS -->
     <script src="~/js/Loginp.js"></script>
 </body>
 </html>

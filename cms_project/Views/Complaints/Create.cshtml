@@ -56,7 +56,7 @@
                     <label for="Attachments" class="form-label">Upload Attachments</label>
                     <input type="file" id="Attachments" class="inputCustom form-control" asp-for="Attachments" multiple>
                     <small class="text-muted">Upload relevant documents or images (optional)</small>
-                    <span asp-validation-for="Attachments" class="text-danger"></span>
+                    <span  class="text-danger"></span>
                 </div>
             </div>
         </div>
@@ -99,78 +99,30 @@
         </div>
     </div>
 </div>
+<div id="centeredSuccessPopup" class="position-fixed top-50 start-50 translate-middle bg-success text-white p-4 rounded shadow-lg text-center"
+     style="z-index: 1050; display: none; min-width: 300px;">
+    <h5 class="mb-2">Complaint Submitted!</h5>
+    <p>Your complaint has been successfully registered.</p>
+</div>
+
 
 <link rel="stylesheet" href="~/css/Complaint-form.css" />
-<script src="~/js/Complaint-form.js" asp-append-version="true"></script>
-@* <div class="container"> *@
-@*     <div class="row justify-content-center"> *@
-@*         <div class="col-md-8"> *@
-@*             <div class="card shadow mt-4 mb-4"> *@
-@*                 <div class="card-header bg-primary text-white"> *@
-@*                     <h4 class="mb-0">Submit New Complaint</h4> *@
-@*                 </div> *@
-@*                 <div class="card-body"> *@
-@*                     <form method="post" enctype="multipart/form-data"> *@
-@*                         <div class="mb-4"> *@
-@*                             <label class="form-label fw-bold">Complaint Type</label> *@
-@*                             <select class="form-select" asp-for="@Model.ComplaintTypeId"> *@
-@*                                 <option value="">-- Select Complaint Type --</option> *@
-
-@*                                 @foreach (var complaint in Model.ComplaintTypeList) *@
-@*                                 { *@
-@*                                     <option value="@complaint.Id">@complaint.Name</option> *@
-
-@*                                 } *@
-                            
-@*                             </select> *@
-@*                             <span asp-validation-for="ComplaintTypeId" class="text-danger"></span> *@
-@*                         </div> *@
-
-@*                         <div class="row mb-3"> *@
-@*                             <label class="col-sm-3 col-form-label">Title</label> *@
-@*                             <div class="col-sm-9"> *@
-@*                                 <input class="form-control" asp-for="Title"> *@
-@*                                 <span asp-validation-for="Title" class="text-danger"></span> *@
-@*                             </div> *@
-@*                         </div> *@
-
-@*                         <div class="row mb-3"> *@
-@*                             <label class="col-sm-3 col-form-label">Description</label> *@
-@*                             <div class="col-sm-9"> *@
-@*                                 <textarea class="form-control" asp-for="Description" rows="5"></textarea> *@
-@*                                 <span asp-validation-for="Description" class="text-danger"></span> *@
-@*                             </div> *@
-@*                         </div> *@
-
-
-@*                         <div class="row mb-4"> *@
-@*                             <label class="col-sm-3 col-form-label">Upload Files</label> *@
-@*                             <div class="col-sm-9"> *@
-@*                                 <input type="file" class="form-control" asp-for="Attachments" multiple> *@
-@*                                 <small class="text-muted">You can upload multiple files at once</small> *@
-@*                                 <span asp-validation-for="Attachments" class="text-danger"></span> *@
-@*                             </div> *@
-@*                         </div> *@
-
-@*                         <div class="row"> *@
-@*                             <div class="col-sm-6 d-grid"> *@
-@*                                 <a class="btn btn-outline-secondary" asp-controller="Complaints" asp-action="Index" role="button"> *@
-@*                                     Cancel *@
-@*                                 </a> *@
-@*                             </div> *@
-@*                             <div class="col-sm-6 d-grid"> *@
-@*                                 <button type="submit" class="btn btn-primary">Submit</button> *@
-@*                             </div> *@
-@*                         </div> *@
-@*                     </form> *@
-@*                 </div> *@
-@*             </div> *@
-@*         </div> *@
-@*     </div> *@
-@* </div> *@
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const successPopup = document.getElementById("centeredSuccessPopup");
+                if (successPopup) {
+                    successPopup.style.display = "block";
+                    setTimeout(() => {
+                        successPopup.style.display = "none";
+                    }, 4000); // Hide after 4 seconds
+                }
+            });
+        </script>
     }
 }

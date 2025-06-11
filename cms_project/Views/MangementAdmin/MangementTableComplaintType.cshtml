@@ -1,42 +1,38 @@
-﻿@model List<cms_project.Models.Entites.UserAccount>
+﻿    @model List<cms_project.Models.Entites.ComplaintType>
 
-<div class="container">
-    <h2>Manage Complaint Type</h2>
+    <div class="container">
+        <h2>Manage Complaint Type</h2>
 
-
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Manage Complaint Type</h6>
+        <div class="mb-3">
+            <a href="@Url.Action("AddComplaintType", "MangementAdmin")" class="btn btn-primary">Add New Complaint Type</a>
         </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                    <thead>
-                        <tr>
-                            <th>User Name</th>
-                            <th>Email</th>
-                            <th>Role</th>
-                            <th>Complaint Type</th>
-                            <th>Action</th>
 
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var user in Model)
-                        {
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Complaint Types</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
                             <tr>
-                                <td>@user.Name</td>
-                                <td>@user.Email</td>
-                                <td>@user.Role.Name</td>
-                                <td>@(user.ComplaintType?.Name ?? "No Type Assigned")</td>
-                                 <td>
-                                    <a href="@Url.Action("EditComplaintType", "MangementAdmin", new { id = user.Id })" class="btn btn-warning">Edit</a>
-                                </td>
+                                <th>ID</th>
+                                <th>Category Name</th>
+                                
                             </tr>
-                        }
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach (var type in Model)
+                            {
+                                <tr>
+                                    <td>@type.Id</td>
+                                    <td>@type.Name</td>
+                                  
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
-</div>

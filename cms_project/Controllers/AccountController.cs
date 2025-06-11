@@ -30,7 +30,7 @@ namespace cms_project.Controllers
         }
 
 
-      
+        [HttpGet]
         public IActionResult Login()
         {
             return View();

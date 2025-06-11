@@ -39,13 +39,20 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("Resolve Complaint", policy =>
 policy.RequireClaim("Permission", "Resolve Complaint"));
     options.AddPolicy("Announcement", policy =>
-policy.RequireClaim("Permission", "Announcement"));
+policy.RequireClaim("Permission", "Announcement")); 
 
     options.AddPolicy("Manage Complaint Types", policy =>
 policy.RequireClaim("Permission", "Manage Complaint Types"));
     options.AddPolicy("Manage User", policy =>
 policy.RequireClaim("Permission", "Manage User"));
+
+    options.AddPolicy("View Dashboard", policy =>
+policy.RequireClaim("Permission", "View Dashboard"));
+
+    options.AddPolicy("Assigne To", policy =>
+policy.RequireClaim("Permission", "Assigne To"));
 });
+
 
 
 
@@ -76,5 +83,9 @@ RecurringJob.AddOrUpdate<ComplaintJob>(
     job => job.CloseResolvedComplaints(),
     Cron.Daily()
 );
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Dashboard}/{action=Index}/{id?}");
 
 app.Run();

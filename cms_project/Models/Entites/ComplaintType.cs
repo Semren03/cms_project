@@ -13,7 +13,7 @@ namespace cms_project.Models.Entites
 
         public ICollection<Complaint> Complaints { get; set; } = new List<Complaint>();
 
-        public ICollection<UserAccount> UserAccounts { get; set; }
+        public ICollection<UserAccount> UserAccounts { get; set; } = new List<UserAccount>();
     }
 
 }

@@ -2423,10 +2423,11 @@ fieldset:disabled a.btn {
 }
 
 .btn-success {
-  color: #fff;
-  background-color: #1cc88a;
-  border-color: #1cc88a;
+    color: red;
+    background-color: #1cc88a;
+    border-color: #1cc88a;
 }
+
 
 .btn-success:hover {
   color: #fff;

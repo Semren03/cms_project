@@ -1,4 +1,5 @@
-﻿using cms_project.Data;
+﻿using System.Security.Claims;
+using cms_project.Data;
 using cms_project.Models.Entites;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,50 +23,64 @@ namespace cms_project.Controllers
         [Authorize]
         public async Task<IActionResult> Index()
         {
-            int pendingCount = await context.Set<Complaint>().CountAsync(c => c.StatusId == (int)ComplaintStatus.Pending);
-            int inProgressCount = await context.Set<Complaint>().CountAsync(c => c.StatusId == (int)ComplaintStatus.InProgress);
-            int resolvedCount = await context.Set<Complaint>().CountAsync(c => c.StatusId == (int)ComplaintStatus.Resolved);
-            int CompletedCount = await context.Set<Complaint>().CountAsync(c => c.StatusId == (int)ComplaintStatus.Closed);
+            int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
-            ViewBag.PendingCount = pendingCount;
-            ViewBag.InProgressCount = inProgressCount;
-            ViewBag.ResolvedCount = resolvedCount;
-            ViewBag.CompletedCount = CompletedCount;
+            var user = await context.Set<UserAccount>()
+                                    .Include(u => u.Role)
+                                    .FirstOrDefaultAsync(u => u.Id == userId);
+
+            string roleName = user?.Role?.Name;
+            ViewBag.Role = roleName;
+
+            if (roleName == "SuperAdmin")
+            {
+                ViewBag.PendingCount = await context.Set<Complaint>().CountAsync(c => c.StatusId == (int)ComplaintStatus.Pending);
+                ViewBag.InProgressCount = await context.Set<Complaint>().CountAsync(c => c.StatusId == (int)ComplaintStatus.InProgress);
+                ViewBag.ResolvedCount = await context.Set<Complaint>().CountAsync(c => c.StatusId == (int)ComplaintStatus.Resolved);
+                ViewBag.CompletedCount = await context.Set<Complaint>().CountAsync(c => c.StatusId == (int)ComplaintStatus.Closed);
+            }
+            else
+            {
+                ViewBag.PendingCount = await context.Set<Complaint>().CountAsync(c => c.StatusId == (int)ComplaintStatus.Pending && c.CreatedBy == userId);
+                ViewBag.InProgressCount = await context.Set<Complaint>().CountAsync(c => c.StatusId == (int)ComplaintStatus.InProgress && c.CreatedBy == userId);
+                ViewBag.ResolvedCount = await context.Set<Complaint>().CountAsync(c => c.StatusId == (int)ComplaintStatus.Resolved && c.CreatedBy == userId);
+                ViewBag.CompletedCount = await context.Set<Complaint>().CountAsync(c => c.StatusId == (int)ComplaintStatus.Closed && c.CreatedBy == userId);
+            }
+
+
+      
 
             var announcements = await context.Announcements
-      .Where(a => a.IsActive)
-      .OrderByDescending(a => a.DatePosted)
-      .ToListAsync();
+                .Where(a => a.IsActive)
+                .OrderByDescending(a => a.DatePosted)
+                .ToListAsync();
 
             var threeDaysAgo = DateTime.Now.AddDays(-3);
 
-            var overdueCount = context.Set<Complaint>()
+            ViewBag.OverdueCount = await context.Set<Complaint>()
                 .Where(c => c.StatusId != (int)ComplaintStatus.Resolved && c.StatusId != (int)ComplaintStatus.Closed)
                 .Where(c => c.CreatedDate < threeDaysAgo)
-                .Count();
+                .CountAsync();
 
-            ViewBag.OverdueCount = overdueCount;
-
-            var complaintStats = context.Set<Complaint>()
-    .GroupBy(c => c.Status)
-    .Select(g => new { Status = g.Key, Count = g.Count() })
-    .ToList();
+            var complaintStats = await context.Set<Complaint>()
+                .GroupBy(c => c.Status)
+                .Select(g => new { Status = g.Key, Count = g.Count() })
+                .ToListAsync();
 
             ViewBag.ChartLabels = complaintStats.Select(s => s.Status).ToArray();
             ViewBag.ChartData = complaintStats.Select(s => s.Count).ToArray();
 
-
             return View(announcements);
+        }
 
-
-
+        public ActionResult FAQ()
+        {
+            return View();
         }
 
 
         [HttpGet]
         [Authorize(Policy = "Announcement")]
-
-
         public ActionResult CreateAnnouncement()
         {
             return View();
@@ -73,7 +88,6 @@ namespace cms_project.Controllers
 
         [HttpPost]
         [Authorize(Policy = "Announcement")]
-
         public ActionResult CreateAnnouncement(Announcement model)
         {
             if (ModelState.IsValid)
@@ -90,9 +104,9 @@ namespace cms_project.Controllers
             return View(model);
         }
 
-        [HttpPost]
-        [Authorize(Policy = "Announcement")]
-
+       
+        
+        [HttpGet]
         public IActionResult DeleteAnnouncement(int id)
         {
             var announcement = context.Announcements.Find(id);
@@ -104,6 +118,8 @@ namespace cms_project.Controllers
 
             return RedirectToAction("Index");
         }
+
+
 
 
 

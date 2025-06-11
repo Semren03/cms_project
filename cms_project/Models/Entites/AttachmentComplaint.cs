@@ -6,8 +6,6 @@ public class AttachmentComplaint
     [Key]
     public Guid Id { get; set; }
 
-    [Required(ErrorMessage = "Attachment name is required")]
-    [StringLength(255)]
     public string AttachmentName { get; set; }
 
    
